@@ -1,48 +1,73 @@
-# Astro Starter Kit: Basics
+# AI flashcards
 
-```sh
-pnpm create astro@latest -- --template basics
-```
+## Project Description
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+AI flashcards is an AI-powered flashcard generation web application designed to simplify and accelerate the creation of high-quality flashcards. By transforming input text into engaging study content, it empowers users to quickly generate flashcards for effective learning.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Tech Stack
 
-![just-the-basics](https://github.com/withastro/astro/assets/2244813/a0a5533c-a856-4198-8470-2d67b1d7c554)
+- **Astro 5**: A modern static site generator for a fast, optimized web experience.
+- **TypeScript 5**: Provides robust type checking and enhanced developer experience.
+- **Vue 3**: A progressive framework for building user interfaces.
+- **Tailwind CSS 4**: A utility-first CSS framework for creating responsive designs.
+- **Shadcn/ui**: A component library for building modern, accessible UIs.
 
-## 🚀 Project Structure
+## Getting Started Locally
 
-Inside of your Astro project, you'll see the following folders and files:
+Follow these steps to set up the project locally:
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src/
-│   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+1. **Clone the Repository:**
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+   ```bash
+   git clone <repository-url>
+   ```
 
-## 🧞 Commands
+2. **Set the Node Version:**
+   Ensure you have the correct Node.js version as specified in the `.nvmrc` file.
+   Current version it's **22.14.0**
 
-All commands are run from the root of the project, from a terminal:
+   ```bash
+   nvm use
+   ```
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
+3. **Install Dependencies:**
 
-## 👀 Want to learn more?
+   ```bash
+   npm install
+   ```
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+4. **Start the Development Server:**
+
+   ```bash
+   npm run dev
+   ```
+
+5. **Open in Browser:**
+   Visit [http://localhost:3000](http://localhost:3000) (or the port specified by your configuration) to view the application.
+
+## Available Scripts
+
+- `npm run dev` - Starts the development server.
+- `npm run build` - Builds the project for production.
+- `npm run preview` - Serves the built project locally for preview.
+- `npm run lint` - Runs ESLint to check for code quality issues.
+- `npm run lint:fix` - Automatically fixes fixable ESLint issues.
+
+_(Additional scripts may be defined in the `package.json` as needed.)_
+
+## Project Scope
+
+The scope of AI flashcards includes:
+
+- Automatic generation of flashcards from provided text.
+- Leveraging AI to transform input into structured, educational flashcards.
+- A modular and scalable architecture built with modern web technologies.
+- An intuitive, responsive user interface to enhance the learning experience.
+
+## Project Status
+
+The project is under active development with ongoing improvements and feature enhancements. Contributions and feedback are welcome to help refine and expand the platform.
+
+## License
+
+This project is licensed under the MIT License.
