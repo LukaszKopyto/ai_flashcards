@@ -9,6 +9,6 @@ export default defineConfig({
   integrations: [vue()],
 
   vite: {
-    plugins: [tailwindcss()]
-  }
+    plugins: [tailwindcss()],
+  },
 });
