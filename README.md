@@ -53,7 +53,14 @@ Follow these steps to set up the project locally:
 - `npm run lint` - Runs ESLint to check for code quality issues.
 - `npm run lint:fix` - Automatically fixes fixable ESLint issues.
 
-_(Additional scripts may be defined in the `package.json` as needed.)_
+## Supabase
+
+For local development with Supabase, ensure that you have the Supabase CLI installed. The following commands are available:
+
+- `supabase start` — Starts the local Supabase instance.
+- `supabase stop` — Stops the local Supabase instance.
+
+For more information, please refer to the [Supabase CLI documentation](https://supabase.com/docs/reference/cli).
 
 ## Project Scope
 
