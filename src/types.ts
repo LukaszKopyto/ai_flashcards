@@ -1,0 +1,73 @@
+import type { Database } from './db/database.types';
+
+// Base entity types
+export type Flashcard = Database['public']['Tables']['flashcards']['Row'];
+export type FlashcardInsert = Database['public']['Tables']['flashcards']['Insert'];
+export type FlashcardUpdate = Database['public']['Tables']['flashcards']['Update'];
+
+export type Generation = Database['public']['Tables']['generations']['Row'];
+
+export type GenerationErrorLog = Database['public']['Tables']['generation_error_logs']['Row'];
+
+// Generic pagination interfaces
+export interface Pagination {
+  limit: number;
+  offset: number;
+  total: number;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  pagination: Pagination;
+}
+
+// 1. Flashcards
+
+// DTO for flashcard returned by GET /flashcards and GET /flashcards/{flashcardId}
+export type FlashcardDto = Pick<
+  Flashcard,
+  'id' | 'title' | 'front' | 'back' | 'tags' | 'source' | 'created_at' | 'updated_at' | 'generation_id'
+>;
+
+// Command model for creating a flashcard (POST /flashcards)
+// We omit fields automatically managed by the system and enforce source as 'manual'
+export interface CreateFlashcardCommand
+  extends Omit<FlashcardInsert, 'user_id' | 'id' | 'created_at' | 'updated_at' | 'generation_id'> {
+  source: 'manual';
+}
+
+// Command model for updating a flashcard (PUT /flashcards/{flashcardId})
+// All fields are optional as per the API specification
+export type UpdateFlashcardCommand = Partial<Pick<FlashcardUpdate, 'title' | 'front' | 'back' | 'tags'>>;
+
+// 2. Generations
+
+export type Source = 'ai_full' | 'ai_edited' | 'manual';
+
+// DTO for a flashcard proposal within a generation session
+// These proposals are not stored in the flashcards table and have a fixed source value of 'ai'
+export interface ProposalFlashcardDto {
+  title: string;
+  front: string;
+  back: string;
+  tags: string[];
+  source: Source;
+}
+
+// DTO for a generation session returned by GET /generations/{generationId}
+// We omit the user_id field as it is not exposed in the API response
+export type GenerationDto = Omit<Generation, 'user_id'> & {
+  flashcards_proposals: ProposalFlashcardDto[];
+};
+
+// Command model for starting a generation session (POST /generations)
+// Accepts the input text and optional metadata; the processing of generation_duration and counts is handled internally
+export interface StartGenerationCommand {
+  input_text: string;
+  metadata?: Record<string, unknown>;
+}
+
+// 3. Generation Error Logs
+
+// DTO for error logs returned by GET /generations/{generationId}/error_logs
+export type GenerationErrorLogDto = Pick<GenerationErrorLog, 'id' | 'error_details' | 'created_at'>;
