@@ -32,8 +32,9 @@ export type FlashcardDto = Pick<
 // Command model for creating a flashcard (POST /flashcards)
 // We omit fields automatically managed by the system and enforce source as 'manual'
 export interface CreateFlashcardCommand
-  extends Omit<FlashcardInsert, 'user_id' | 'id' | 'created_at' | 'updated_at' | 'generation_id'> {
-  source: 'manual';
+  extends Omit<FlashcardInsert, 'user_id' | 'id' | 'created_at' | 'updated_at'> {
+  source: Source;
+  generation_id?: string; // Optional for 'ai' and 'ai_edited'
 }
 
 // Command model for updating a flashcard (PUT /flashcards/{flashcardId})
@@ -42,7 +43,7 @@ export type UpdateFlashcardCommand = Partial<Pick<FlashcardUpdate, 'title' | 'fr
 
 // 2. Generations
 
-export type Source = 'ai_full' | 'ai_edited' | 'manual';
+export type Source = 'ai' | 'ai_edited' | 'manual';
 
 // DTO for a flashcard proposal within a generation session
 // These proposals are not stored in the flashcards table and have a fixed source value of 'ai'

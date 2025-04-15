@@ -5,8 +5,6 @@ export interface SanitizationOptions {
   removeControlChars?: boolean;
   normalizeWhitespace?: boolean;
   trim?: boolean;
-  escapeSqlChars?: boolean;
-  maxLength?: number;
 }
 
 const DEFAULT_OPTIONS: SanitizationOptions = {
@@ -14,8 +12,6 @@ const DEFAULT_OPTIONS: SanitizationOptions = {
   removeControlChars: true,
   normalizeWhitespace: true,
   trim: true,
-  escapeSqlChars: true,
-  maxLength: 10000, // Dostosuj według potrzeb
 };
 
 /**
@@ -43,17 +39,6 @@ export function sanitize(text: string, options: SanitizationOptions = DEFAULT_OP
     sanitized = sanitized.trim();
   }
 
-  if (options.escapeSqlChars) {
-    // Escape special PostgreSQL characters
-    sanitized = sanitized
-      .replace(/'/g, "''") // Escape single quotes
-      .replace(/\\/g, '\\\\'); // Escape backslashes
-  }
-
-  if (options.maxLength && sanitized.length > options.maxLength) {
-    sanitized = sanitized.substring(0, options.maxLength);
-  }
-
   // Ensure valid UTF-8 encoding for PostgreSQL
   sanitized = Buffer.from(sanitized).toString('utf-8');
 
@@ -71,7 +56,5 @@ export function sanitizeGenerationInput(text: string): string {
     removeControlChars: true,
     normalizeWhitespace: true,
     trim: true,
-    escapeSqlChars: true,
-    maxLength: 10000,
   });
 }
