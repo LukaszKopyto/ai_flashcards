@@ -1,4 +1,6 @@
 import type { Database } from './db/database.types';
+import type { ValueOf } from './lib/constants';
+import { FLASHCARD_PROPOSAL_STATE } from './lib/constants';
 
 // Base entity types
 export type Flashcard = Database['public']['Tables']['flashcards']['Row'];
@@ -34,7 +36,7 @@ export type FlashcardDto = Pick<
 export interface CreateFlashcardCommand
   extends Omit<FlashcardInsert, 'user_id' | 'id' | 'created_at' | 'updated_at'> {
   source: Source;
-  generation_id?: string; // Optional for 'ai' and 'ai_edited'
+  generation_id?: string | null; // Optional for 'ai' and 'ai_edited', can be null
 }
 
 // Command model for updating a flashcard (PUT /flashcards/{flashcardId})
@@ -45,15 +47,13 @@ export type UpdateFlashcardCommand = Partial<Pick<FlashcardUpdate, 'title' | 'fr
 
 export type Source = 'ai' | 'ai_edited' | 'manual';
 
+export type FlashcardProposalState = ValueOf<typeof FLASHCARD_PROPOSAL_STATE>;
+
 // DTO for a flashcard proposal within a generation session
 // These proposals are not stored in the flashcards table and have a fixed source value of 'ai'
-export interface ProposalFlashcardDto {
-  title: string;
-  front: string;
-  back: string;
-  tags: string[];
-  source: Source;
-}
+export type ProposalFlashcardDto = Pick<Flashcard, 'id' | 'title' | 'front' | 'back' | 'tags' | 'source'> & {
+  state: FlashcardProposalState;
+};
 
 // DTO for a generation session returned by GET /generations/{generationId}
 // We omit the user_id field as it is not exposed in the API response

@@ -5,18 +5,22 @@ import type { StartGenerationCommand, GenerationDto, ProposalFlashcardDto } from
 // Mock AI-generated flashcards for development
 const mockFlashcardProposals: ProposalFlashcardDto[] = [
   {
+    id: '1',
     title: 'Sample Flashcard 1',
     front: 'What is the capital of France?',
     back: 'Paris is the capital of France',
     tags: ['geography', 'europe', 'capitals'],
-    source: 'ai_full',
+    source: 'ai',
+    state: 'initial',
   },
   {
+    id: '2',
     title: 'Sample Flashcard 2',
     front: 'What is the largest planet in our solar system?',
     back: 'Jupiter is the largest planet in our solar system',
     tags: ['astronomy', 'planets', 'solar system'],
-    source: 'ai_full',
+    source: 'ai',
+    state: 'initial',
   },
 ];
 

@@ -35,13 +35,20 @@ const jsxA11yConfig = tseslint.config({
 
 const vueConfig = tseslint.config({
   files: ['**/*.vue'],
-  extends: [...pluginVue.configs['flat/recommended']],
+  extends: [
+    ...pluginVue.configs['flat/recommended'],
+    ...pluginVue.configs['flat/typescript']
+  ],
   languageOptions: {
+    parser: pluginVue.configs['flat/parser'],
     sourceType: 'module',
     globals: {
       ...globals.browser,
     },
   },
+  rules: {
+    'vue/script-setup-uses-vars': 'error'
+  }
 });
 
 export default tseslint.config(

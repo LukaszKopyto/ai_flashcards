@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import type { APIRoute } from 'astro';
-import { FlashcardService } from '../../lib/services/flashcard.service';
-import { DEFAULT_USER_ID } from '../../db/supabase.client';
-import { sanitizeGenerationInput } from '../../lib/sanitization/text';
+import { FlashcardService } from '@/lib/services/flashcard.service';
+import { DEFAULT_USER_ID } from '@/db/supabase.client';
+import { sanitizeGenerationInput } from '@/lib/sanitization/text';
 
 export const prerender = false;
 
@@ -28,7 +28,7 @@ const createFlashcardSchema = z
       .default([])
       .transform((tags) => tags.map((tag) => sanitizeGenerationInput(tag)).filter((tag) => tag.length > 0)),
     source: z.enum(['ai', 'ai_edited', 'manual']),
-    generation_id: z.string().uuid().optional(),
+    generation_id: z.string().uuid().nullable(),
   })
   .refine(
     (data) => {

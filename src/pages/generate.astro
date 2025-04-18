@@ -1,0 +1,15 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GeneratePage from '../components/generate/GeneratePage.vue';
+import { GraduationCap } from 'lucide-vue-next';
+---
+
+<Layout title="Generate Flashcards">
+  <main class="container mx-auto px-4 py-8">
+    <h1 class="mb-8 flex items-center gap-2 text-4xl font-bold text-slate-700">
+      <GraduationCap class="h-9 w-9" />
+      Generate Flashcards
+    </h1>
+    <GeneratePage client:load />
+  </main>
+</Layout>

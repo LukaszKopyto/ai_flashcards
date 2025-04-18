@@ -5,7 +5,8 @@
   "printWidth": 120,
   "trailingComma": "es5",
   "plugins": [
-    "prettier-plugin-astro"
+    "prettier-plugin-astro",
+    "prettier-plugin-tailwindcss"
   ],
   "overrides": [
     {
