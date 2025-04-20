@@ -1,6 +1,5 @@
-import type { Database } from './db/database.types';
-import type { ValueOf } from './lib/constants';
-import { FLASHCARD_PROPOSAL_STATE } from './lib/constants';
+import type { Database } from '@/db/database.types';
+import { FLASHCARD_PROPOSAL_STATE } from '@/lib/constants';
 
 // Base entity types
 export type Flashcard = Database['public']['Tables']['flashcards']['Row'];
@@ -61,6 +60,8 @@ export type GenerationDto = Omit<Generation, 'user_id'> & {
   flashcards_proposals: ProposalFlashcardDto[];
 };
 
+export type ValueOf<T> = T[keyof T]; 
+
 // Command model for starting a generation session (POST /generations)
 // Accepts the input text and optional metadata; the processing of generation_duration and counts is handled internally
 export interface StartGenerationCommand {
@@ -72,3 +73,35 @@ export interface StartGenerationCommand {
 
 // DTO for error logs returned by GET /generations/{generationId}/error_logs
 export type GenerationErrorLogDto = Pick<GenerationErrorLog, 'id' | 'error_details' | 'created_at'>;
+
+// New types for OpenRouterService
+export interface ModelConfig {
+  modelName: string;
+  parameters: {
+    max_tokens: number;
+    [key: string]: any;
+  };
+}
+
+export interface FlashcardResponse {
+  flashcards: {
+    title: string;
+    front: string;
+    back: string;
+    tags: string[];
+    relevance: number;
+  }[];
+}
+
+export interface APIResponse {
+  type: string;
+  data: FlashcardResponse['flashcards'];
+}
+
+export type ParsedResponse = {
+  title: string;
+  front: string;
+  back: string;
+  tags: string[];
+  relevance: number;
+};

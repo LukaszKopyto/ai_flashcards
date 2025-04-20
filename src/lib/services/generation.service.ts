@@ -1,28 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '../../db/database.types';
-import type { StartGenerationCommand, GenerationDto, ProposalFlashcardDto } from '../../types';
-
-// Mock AI-generated flashcards for development
-const mockFlashcardProposals: ProposalFlashcardDto[] = [
-  {
-    id: '1',
-    title: 'Sample Flashcard 1',
-    front: 'What is the capital of France?',
-    back: 'Paris is the capital of France',
-    tags: ['geography', 'europe', 'capitals'],
-    source: 'ai',
-    state: 'initial',
-  },
-  {
-    id: '2',
-    title: 'Sample Flashcard 2',
-    front: 'What is the largest planet in our solar system?',
-    back: 'Jupiter is the largest planet in our solar system',
-    tags: ['astronomy', 'planets', 'solar system'],
-    source: 'ai',
-    state: 'initial',
-  },
-];
+import type { StartGenerationCommand, GenerationDto, ParsedResponse } from '../../types';
+import { OpenRouterService } from './openRouter.service';
 
 export class GenerationError extends Error {
   constructor(
@@ -36,7 +15,10 @@ export class GenerationError extends Error {
 }
 
 export class GenerationService {
-  constructor(private readonly supabaseClient: SupabaseClient<Database>) {}
+  constructor(
+    private readonly supabaseClient: SupabaseClient<Database>,
+    private readonly openRouterService: OpenRouterService
+  ) {}
 
   async startGeneration(command: StartGenerationCommand, userId: string): Promise<GenerationDto> {
     try {
@@ -64,8 +46,20 @@ export class GenerationService {
         throw new GenerationError('Generation record was not created', 'DATABASE_ERROR');
       }
 
-      // 2. Mock AI service response
-      const proposals = mockFlashcardProposals;
+      // 2. Generate flashcard proposals using LLM via OpenRouterService
+      const llmResponse = await this.openRouterService.sendChatMessage(command.input_text);
+      const flashcardsData = llmResponse.data;
+      const proposals = flashcardsData.map((flashcardData: ParsedResponse) => ({
+        ...flashcardData,
+        id: `llm-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        source: 'ai' as const,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        generation_id: generation.id,
+        user_id: userId,
+        state: 'initial' as const
+      }));
+
       const endTime = Date.now();
       const generationDuration = endTime - startTime;
 
