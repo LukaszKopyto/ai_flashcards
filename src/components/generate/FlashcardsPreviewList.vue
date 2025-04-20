@@ -16,9 +16,10 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div v-if="flashcards.length > 0" class="space-y-6">
+  <section v-if="flashcards.length > 0" class="space-y-6">
+    Ū
     <h2 class="text-xl font-semibold">Generated Flashcards</h2>
-    <div class="grid gap-4">
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
       <FlashcardCard
         v-for="flashcard in flashcards"
         :key="flashcard.id"
@@ -28,5 +29,5 @@ const emit = defineEmits<{
         @reject="emit('reject', flashcard)"
       />
     </div>
-  </div>
+  </section>
 </template>

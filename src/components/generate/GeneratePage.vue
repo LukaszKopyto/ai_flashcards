@@ -78,9 +78,9 @@ const handleBulkSave = async () => {
 <template>
   <div class="container mx-auto space-y-8 py-8">
     <div class="space-y-4">
-      <div class="flex items-center justify-between">
+      <div class="flex flex-wrap items-center justify-between">
         <Label for="input-text" class="text-lg font-semibold">Enter your text (1000-10000 characters)</Label>
-        <div class="text-sm text-gray-500">{{ charCount }} characters</div>
+        <span class="flex-shrink-0 text-sm text-gray-500">{{ charCount }} characters</span>
       </div>
       <TextArea
         id="input-text"
@@ -93,7 +93,7 @@ const handleBulkSave = async () => {
           {{ validationMessage }}
         </span>
         <span v-else class="invisible"><!-- Placeholder to maintain layout --></span>
-        <div class="ml-auto flex gap-4">
+        <div class="flex flex-wrap justify-end gap-4">
           <Button @click="handleAddNewFlashcard" variant="outline"> Add Flashcard </Button>
           <Button
             @click="handleGenerate"
@@ -107,7 +107,6 @@ const handleBulkSave = async () => {
     </div>
 
     <FlashcardsPreviewList
-      v-if="flashcardsList.length > 0"
       :flashcards="flashcardsList"
       @accept="acceptFlashcard"
       @edit="handleEditFlashcard"
