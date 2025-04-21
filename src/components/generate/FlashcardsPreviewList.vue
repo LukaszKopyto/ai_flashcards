@@ -17,7 +17,6 @@ const emit = defineEmits<{
 
 <template>
   <section v-if="flashcards.length > 0" class="space-y-6">
-    Ū
     <h2 class="text-xl font-semibold">Generated Flashcards</h2>
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
       <FlashcardCard

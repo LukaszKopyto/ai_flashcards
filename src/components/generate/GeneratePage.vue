@@ -98,9 +98,10 @@ const handleBulkSave = async () => {
           <Button
             @click="handleGenerate"
             :disabled="!isValid || isGenerating"
+            :loading="isGenerating"
             :class="{ 'cursor-not-allowed opacity-50': !isValid || isGenerating }"
           >
-            {{ isGenerating ? 'Generating...' : 'Generate Flashcards' }}
+            <span>Generate Flashcards</span>
           </Button>
         </div>
       </div>
@@ -114,8 +115,14 @@ const handleBulkSave = async () => {
     />
 
     <div v-if="flashcardsList.length > 0" class="flex justify-end">
-      <Button @click="handleBulkSave" :disabled="isSavingBulk" variant="default" class="w-full sm:w-auto">
-        {{ isSavingBulk ? 'Saving...' : 'Save All' }}
+      <Button
+        @click="handleBulkSave"
+        :disabled="isSavingBulk"
+        :loading="isSavingBulk"
+        variant="default"
+        class="w-full sm:w-auto"
+      >
+        <span>Save All</span>
       </Button>
     </div>
 

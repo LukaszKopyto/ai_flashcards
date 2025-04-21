@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import '@fontsource-variable/plus-jakarta-sans';
+import HeaderNavigation from '@/components/HeaderNavigation.vue';
 ---
 
 <!doctype html>
@@ -13,8 +14,31 @@ import '@fontsource-variable/plus-jakarta-sans';
     <title>Flashcardify</title>
   </head>
   <body class="bg-slate-50">
-    <slot />
+    <HeaderNavigation client:load />
+    <div class="md:hidden" id="mobile-menu" style="display: none;">
+      <nav class="space-y-1 pt-2 pb-3">
+        <a
+          href="/generate"
+          class="block border-l-4 border-transparent py-2 pr-4 pl-3 hover:border-indigo-500 hover:text-indigo-600"
+        >
+          <span>Generate Flashcards</span>
+        </a>
+        <a
+          href="/flashcards"
+          class="block border-l-4 border-transparent py-2 pr-4 pl-3 hover:border-indigo-500 hover:text-indigo-600"
+        >
+          <span>Flashcards</span>
+        </a>
+        <a
+          href="/profile"
+          class="block border-l-4 border-transparent py-2 pr-4 pl-3 hover:border-indigo-500 hover:text-indigo-600"
+        >
+          <span>Profile</span>
+        </a>
+      </nav>
+    </div>
   </body>
+  <slot />
 </html>
 
 <style>
