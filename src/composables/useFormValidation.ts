@@ -1,11 +1,17 @@
-import { computed, ref } from 'vue'
-import type { z } from 'zod'
+import { computed, ref, type Ref } from 'vue'
+import { z } from 'zod'
 
-export function useFormValidation<T extends z.ZodType>(schema: T) {
+export function useFormValidation<T extends z.ZodType>(
+  schema: T,
+  formData: Ref<z.infer<T>>
+) {
+  if (typeof formData.value !== 'object' || formData.value === null) {
+    throw new Error('formData must be an object')
+  }
+
   type FormData = z.infer<T>
-  type FieldKeys = Extract<keyof FormData, string>
+  type FieldKeys = FormData extends object ? keyof FormData : never
 
-  const formData = ref<FormData>({} as FormData)
   const touchedFields = ref(new Set<string>())
   const isSubmitted = ref(false)
 
@@ -34,7 +40,7 @@ export function useFormValidation<T extends z.ZodType>(schema: T) {
   const isValid = computed(() => Object.keys(_validationErrors.value).length === 0)
 
   const setFieldTouched = (field: FieldKeys) => {
-    touchedFields.value.add(field)
+    touchedFields.value.add(field as string)
   }
 
   const _resetTouched = () => {
@@ -42,8 +48,12 @@ export function useFormValidation<T extends z.ZodType>(schema: T) {
     isSubmitted.value = false
   }
 
-  const resetForm = (defaultValues?: Partial<FormData>) => {
-    formData.value = defaultValues ? { ...defaultValues } as FormData : {} as FormData
+  const resetForm = () => {
+    if (schema instanceof z.ZodObject) {
+      Object.keys(schema.shape).forEach((key) => {
+        (formData.value as any)[key] = ''
+      })
+    }
     _resetTouched()
   }
 
@@ -53,7 +63,6 @@ export function useFormValidation<T extends z.ZodType>(schema: T) {
   }
 
   return {
-    formData,
     validationErrors: visibleErrors,
     isValid,
     resetForm,

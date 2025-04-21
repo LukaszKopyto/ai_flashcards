@@ -13,6 +13,8 @@ const props = withDefaults(defineProps<Props>(), {
   class: '',
 });
 
+const model = defineModel<string>({ default: '' });
+
 const inputClass = computed(() => {
   return cn(
     'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background',
@@ -27,5 +29,5 @@ const inputClass = computed(() => {
 </script>
 
 <template>
-  <input :type="type" :class="inputClass" v-bind="$attrs" />
+  <input :type="type" :class="inputClass" v-model="model" v-bind="$attrs" />
 </template>

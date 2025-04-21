@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { watch } from 'vue';
+import { ref, watch } from 'vue';
 import { z } from 'zod';
-import type { ProposalFlashcardDto } from '../../types';
+import type { ProposalFlashcardDto, UpdateFlashcardCommand } from '../../types';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -48,7 +48,16 @@ const emit = defineEmits<{
   (e: 'save', flashcard: ProposalFlashcardDto): void;
 }>();
 
-const { formData, validationErrors, resetForm, setFieldTouched, handleSubmit } = useFormValidation(flashcardSchema);
+type FlashcardFormData = z.infer<typeof flashcardSchema>;
+
+const formData = ref<FlashcardFormData>({
+  title: '',
+  front: '',
+  back: '',
+  tags: '',
+});
+
+const { validationErrors, resetForm, setFieldTouched, handleSubmit } = useFormValidation(flashcardSchema, formData);
 
 watch(
   () => props.flashcard,

@@ -8,17 +8,17 @@ import { Toaster } from '@/components/ui/sonner';
 import { z } from 'zod';
 import { useFormValidation } from '@/composables/useFormValidation';
 
-const emailSchema = z.object({
+const schema = z.object({
   email: z.string().email('Please enter a valid email address'),
 });
 
-const {
-  formData,
-  validationErrors,
-  isValid,
-  setFieldTouched,
-  handleSubmit: validateForm,
-} = useFormValidation(emailSchema);
+type EmailFormData = z.infer<typeof schema>;
+
+const formData = ref<EmailFormData>({
+  email: '',
+});
+
+const { validationErrors, isValid, setFieldTouched, handleSubmit: validateForm } = useFormValidation(schema, formData);
 
 const isLoading = ref(false);
 const isEmailSent = ref(false);

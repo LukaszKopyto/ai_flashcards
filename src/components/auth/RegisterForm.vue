@@ -25,13 +25,20 @@ const registerSchema = z
     path: ['confirmPassword'],
   });
 
+type RegisterForm = z.infer<typeof registerSchema>;
+
+const formData = ref<RegisterForm>({
+  email: '',
+  password: '',
+  confirmPassword: '',
+});
+
 const {
-  formData,
   validationErrors,
   isValid,
   setFieldTouched,
   handleSubmit: validateForm,
-} = useFormValidation(registerSchema);
+} = useFormValidation(registerSchema, formData);
 
 const isLoading = ref(false);
 

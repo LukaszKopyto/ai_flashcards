@@ -19,13 +19,19 @@ const loginSchema = z.object({
     .regex(/[^A-Za-z0-9]/, 'Password must contain at least one special character'),
 });
 
+type LoginForm = z.infer<typeof loginSchema>;
+
+const formData = ref<LoginForm>({
+  email: '',
+  password: '',
+});
+
 const {
-  formData,
   validationErrors,
   isValid,
   setFieldTouched,
   handleSubmit: validateForm,
-} = useFormValidation(loginSchema);
+} = useFormValidation(loginSchema, formData);
 
 const isLoading = ref(false);
 
@@ -54,7 +60,6 @@ const handleSubmit = async (e: Event) => {
     </div>
 
     <form @submit="handleSubmit" class="space-y-6">
-      <pre>{{ formData }}</pre>
       <div class="space-y-2">
         <Label for="email">Email</Label>
         <Input
