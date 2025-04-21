@@ -66,7 +66,7 @@ Kryteria akceptacji:
 
 - Formularz rejestracyjny zawiera pola na adres e-mail i hasło.
 - Po poprawnym wypełnieniu formularza i weryfikacji danych konto jest aktywowane.
-- Użytkownik otrzymuje potwierdzenie pomyślnej rejestracji i zostaje zalogowany.
+- Użytkownik otrzymuje potwierdzenie pomyślnej rejestracji i zostaje zalogowany i przekierowany na strone /generates
 
 ID: US-002
 Tytuł: Logowanie do aplikacji
@@ -140,6 +140,7 @@ Kryteria akceptacji:
 
 - Tylko zalogowany użytkownik może wyświetlać, edytować i usuwać swoje fiszki.
 - Nie ma dostępu do fiszek innych użytkowników ani możliwości współdzielenia.
+- cała autoryzacja jest przygotowana za pomoca auth z supabase
 
 ## 6. Metryki sukcesu
 
