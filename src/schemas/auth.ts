@@ -1,28 +1,31 @@
 import { z } from 'zod';
 
-export const loginSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
-  password: z
-    .string()
-    .min(8, 'Password must be at least 8 characters long')
-    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-    .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-    .regex(/[0-9]/, 'Password must contain at least one number')
-    .regex(/[^A-Za-z0-9]/, 'Password must contain at least one special character'),
+// Common password validation rules
+const passwordValidation = z
+  .string()
+  .min(8, 'Password must be at least 8 characters long')
+  .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+  .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+  .regex(/[0-9]/, 'Password must contain at least one number')
+  .regex(/[^A-Za-z0-9]/, 'Password must contain at least one special character');
+
+// Common email validation
+const emailValidation = z.string().email('Please enter a valid email address');
+
+// Base schemas
+export const emailSchema = z.object({
+  email: emailValidation,
 });
 
-export type LoginForm = z.infer<typeof loginSchema>; 
+export const loginSchema = z.object({
+  email: emailValidation,
+  password: passwordValidation,
+});
 
 export const registerSchema = z
   .object({
-    email: z.string().email('Please enter a valid email address'),
-    password: z
-      .string()
-      .min(8, 'Password must be at least 8 characters long')
-      .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-      .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-      .regex(/[0-9]/, 'Password must contain at least one number')
-      .regex(/[^A-Za-z0-9]/, 'Password must contain at least one special character'),
+    email: emailValidation,
+    password: passwordValidation,
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -30,24 +33,10 @@ export const registerSchema = z
     path: ['confirmPassword'],
   });
 
-export type RegisterForm = z.infer<typeof registerSchema>;
-
-export const emailSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
-});
-
-export type EmailFormData = z.infer<typeof emailSchema>;
-
 export const updatePasswordSchema = z
   .object({
     currentPassword: z.string().min(1, 'Current password is required'),
-    newPassword: z
-      .string()
-      .min(8, 'Password must be at least 8 characters')
-      .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-      .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-      .regex(/[0-9]/, 'Password must contain at least one number')
-      .regex(/[^A-Za-z0-9]/, 'Password must contain at least one special character'),
+    newPassword: passwordValidation,
     confirmNewPassword: z.string().min(1, 'Please confirm your new password'),
   })
   .refine((data) => data.newPassword === data.confirmNewPassword, {
@@ -59,4 +48,8 @@ export const updatePasswordSchema = z
     path: ['newPassword'],
   });
 
+// Type exports
+export type EmailFormData = z.infer<typeof emailSchema>;
+export type LoginForm = z.infer<typeof loginSchema>;
+export type RegisterForm = z.infer<typeof registerSchema>;
 export type UpdatePasswordForm = z.infer<typeof updatePasswordSchema>;
