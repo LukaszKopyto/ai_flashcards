@@ -13,6 +13,7 @@
   "dependencies": {
     "@astrojs/vue": "^5.0.9",
     "@fontsource-variable/plus-jakarta-sans": "^5.2.5",
+    "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.49.4",
     "@tailwindcss/vite": "^4.1.4",
     "@vueuse/core": "^13.1.0",
@@ -20,6 +21,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-vue-next": "^0.488.0",
+    "pinia": "^3.0.2",
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "reka-ui": "^2.2.0",

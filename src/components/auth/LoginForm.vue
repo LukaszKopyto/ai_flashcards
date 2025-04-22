@@ -5,21 +5,8 @@ import Input from '@/components/ui/input/Input.vue';
 import { Label } from '@/components/ui/label';
 import { toast } from 'vue-sonner';
 import { Toaster } from '@/components/ui/sonner';
-import { z } from 'zod';
+import { loginSchema, type LoginForm } from '@/schemas/auth';
 import { useFormValidation } from '@/composables/useFormValidation';
-
-const loginSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
-  password: z
-    .string()
-    .min(8, 'Password must be at least 8 characters long')
-    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-    .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-    .regex(/[0-9]/, 'Password must contain at least one number')
-    .regex(/[^A-Za-z0-9]/, 'Password must contain at least one special character'),
-});
-
-type LoginForm = z.infer<typeof loginSchema>;
 
 const formData = ref<LoginForm>({
   email: '',
@@ -42,8 +29,22 @@ const handleSubmit = async (e: Event) => {
 
   try {
     isLoading.value = true;
-    // Backend integration will be implemented later
-    console.log('Form submitted:', formData.value);
+    const response = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData.value),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      toast.error(data.error || 'Failed to login');
+      return;
+    }
+
+    window.location.href = '/generate';
   } catch (error) {
     toast.error('An error occurred while logging in');
   } finally {

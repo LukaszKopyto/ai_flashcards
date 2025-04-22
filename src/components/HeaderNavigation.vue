@@ -1,8 +1,19 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Menu, X, Zap } from 'lucide-vue-next';
+import { useAuthStore } from '@/stores/auth.store';
+import UserMenu from '@/components/UserMenu.vue';
+
+const authStore = useAuthStore();
+
+const isAuth = ref(false);
 
 const isOpen = ref(false);
+
+const navigationItems = [
+  { href: '/generate', label: 'Generate Flashcards' },
+  { href: '/flashcards', label: 'Flashcards' },
+];
 </script>
 
 <template>
@@ -18,58 +29,49 @@ const isOpen = ref(false);
           </div>
           <nav class="hidden md:ml-6 md:flex md:space-x-8">
             <a
-              href="/generate"
+              v-for="item in navigationItems"
+              :key="item.href"
+              :href="item.href"
               class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 hover:border-indigo-500 hover:text-indigo-600"
             >
-              <span>Generate Flashcards</span>
-            </a>
-            <a
-              href="/flashcards"
-              class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 hover:border-indigo-500 hover:text-indigo-600"
-            >
-              <span>Flashcards</span>
-            </a>
-            <a
-              href="/profile"
-              class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 hover:border-indigo-500 hover:text-indigo-600"
-            >
-              <span>Profile</span>
+              <span>{{ item.label }}</span>
             </a>
           </nav>
         </div>
-        <div class="flex items-center md:hidden">
-          <button
-            @click="isOpen = !isOpen"
-            class="inline-flex items-center justify-center rounded-md p-2 hover:bg-gray-100 focus:outline-none"
-            :aria-expanded="isOpen"
-            aria-controls="mobile-menu"
-          >
-            <span class="sr-only">{{ isOpen ? 'Close menu' : 'Open menu' }}</span>
-            <component :is="isOpen ? X : Menu" class="h-6 w-6" />
-          </button>
+        <div class="flex items-center">
+          <div class="hidden md:block">
+            <UserMenu />
+          </div>
+          <div class="md:hidden">
+            <button
+              @click="isOpen = !isOpen"
+              class="inline-flex items-center justify-center rounded-md p-2 hover:bg-gray-100 focus:outline-none"
+              :aria-expanded="isOpen"
+              aria-controls="mobile-menu"
+            >
+              <span class="sr-only">{{ isOpen ? 'Close menu' : 'Open menu' }}</span>
+              <component :is="isOpen ? X : Menu" class="h-6 w-6" />
+            </button>
+          </div>
         </div>
       </div>
     </div>
     <div v-show="isOpen" class="mobile-menu-overlay md:hidden" :class="{ 'is-open': isOpen }">
       <nav class="mobile-menu-content">
         <a
-          href="/generate"
+          v-for="item in [...navigationItems, { href: '/profile', label: 'Profile' }]"
+          :key="item.href"
+          :href="item.href"
           class="block border-l-4 border-transparent px-6 py-4 text-lg hover:border-indigo-500 hover:text-indigo-600"
         >
-          <span>Generate Flashcards</span>
+          <span>{{ item.label }}</span>
         </a>
-        <a
-          href="/flashcards"
+        <div
+          @click="authStore.logout"
           class="block border-l-4 border-transparent px-6 py-4 text-lg hover:border-indigo-500 hover:text-indigo-600"
         >
-          <span>Flashcards</span>
-        </a>
-        <a
-          href="/profile"
-          class="block border-l-4 border-transparent px-6 py-4 text-lg hover:border-indigo-500 hover:text-indigo-600"
-        >
-          <span>Profile</span>
-        </a>
+          <span>Logout</span>
+        </div>
       </nav>
     </div>
   </header>

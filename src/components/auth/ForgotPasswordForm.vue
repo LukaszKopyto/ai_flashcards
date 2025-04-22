@@ -5,20 +5,19 @@ import Input from '@/components/ui/input/Input.vue';
 import { Label } from '@/components/ui/label';
 import { toast } from 'vue-sonner';
 import { Toaster } from '@/components/ui/sonner';
-import { z } from 'zod';
 import { useFormValidation } from '@/composables/useFormValidation';
-
-const schema = z.object({
-  email: z.string().email('Please enter a valid email address'),
-});
-
-type EmailFormData = z.infer<typeof schema>;
+import { emailSchema, type EmailFormData } from '@/schemas/auth';
 
 const formData = ref<EmailFormData>({
   email: '',
 });
 
-const { validationErrors, isValid, setFieldTouched, handleSubmit: validateForm } = useFormValidation(schema, formData);
+const {
+  validationErrors,
+  isValid,
+  setFieldTouched,
+  handleSubmit: validateForm,
+} = useFormValidation(emailSchema, formData);
 
 const isLoading = ref(false);
 const isEmailSent = ref(false);
