@@ -1,11 +1,11 @@
 import { defineMiddleware } from 'astro:middleware';
 import { createServerClient, parseCookieHeader } from '@supabase/ssr'
-import { AuthService } from '@/lib/services/auth.service';
 const PUBLIC_PAGES = ['/login', '/register', '/forgot-password'];
 
 export const onRequest = defineMiddleware(async (context, next) => {
-  console.log('👀 ✅  URL: ', import.meta.env.SUPABASE_URL);
-  console.log('👀 ✅  ANON KEY: ', import.meta.env.SUPABASE_KEY);
+  if (!import.meta.env.SUPABASE_URL || !import.meta.env.SUPABASE_KEY) {
+    throw new Error('Missing Supabase environment variables');
+  }
 
   const supabase = createServerClient(
     import.meta.env.SUPABASE_URL,
@@ -27,8 +27,6 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const {
     data: { session },
   } = await supabase.auth.getSession();
-  console.log('👀 ✅ Session: ', session);
-
 
   // Add Supabase instance to locals for API routes
   context.locals.supabase = supabase;
