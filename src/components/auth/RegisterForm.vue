@@ -32,8 +32,23 @@ const handleSubmit = async (e: Event) => {
 
   try {
     isLoading.value = true;
-    // Backend integration will be implemented later
-    console.log('Form submitted:', formData.value);
+
+    const response = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData.value),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      toast.error(data.error || 'Failed to register');
+      return;
+    }
+
+    window.location.href = '/login';
   } catch (error) {
     toast.error('An error occurred while registering');
   } finally {
