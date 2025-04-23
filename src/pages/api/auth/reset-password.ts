@@ -43,6 +43,18 @@ export const POST: APIRoute = async ({ request, locals, cookies }) => {
       }, 400);
     }
 
+    // Check if the new password is the same as the current one
+    const { error: signInError } = await locals.supabase.auth.signInWithPassword({
+      email: data.user?.email ?? '',
+      password: newPassword
+    });
+
+    if (!signInError) {
+      return createSecureJsonResponse({ 
+        error: 'New password must be different from your current password'
+      }, 400);
+    }
+
     // Then update the password
     const { error: updateError } = await locals.supabase.auth.updateUser({
       password: newPassword
