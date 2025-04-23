@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useAuthStore } from '@/stores/auth.store';
 import { formatDate } from '@/lib/utils';
 
@@ -18,21 +19,25 @@ const handleChangePassword = () => {
     </CardHeader>
     <CardContent>
       <div class="space-y-4">
-        <div>
+        <div class="h-14">
           <label class="text-muted-foreground text-sm font-medium">Username</label>
-          <p class="text-lg">{{ authStore.user?.email }}</p>
+          <Skeleton v-if="authStore.isLoading" class="h-7 w-48" />
+          <p v-else class="text-lg">{{ authStore.user?.email }}</p>
         </div>
-        <div>
+        <div class="h-14">
           <label class="text-muted-foreground text-sm font-medium">Email</label>
-          <p class="text-lg">{{ authStore.user?.email }}</p>
+          <Skeleton v-if="authStore.isLoading" class="h-7 w-48" />
+          <p v-else class="text-lg">{{ authStore.user?.email }}</p>
         </div>
-        <div>
+        <div class="h-14">
           <label class="text-muted-foreground text-sm font-medium">Member since</label>
-          <p class="text-lg">{{ authStore.user?.created_at ? formatDate(authStore.user.created_at) : '-' }}</p>
+          <Skeleton v-if="authStore.isLoading" class="h-7 w-48" />
+          <p v-else class="text-lg">{{ authStore.user?.created_at ? formatDate(authStore.user.created_at) : '-' }}</p>
         </div>
-        <div>
+        <div class="h-14">
           <label class="text-muted-foreground text-sm font-medium">Last sign in</label>
-          <p class="text-lg">
+          <Skeleton v-if="authStore.isLoading" class="h-7 w-48" />
+          <p v-else class="text-lg">
             {{ authStore.user?.last_sign_in_at ? formatDate(authStore.user.last_sign_in_at) : '-' }}
           </p>
         </div>

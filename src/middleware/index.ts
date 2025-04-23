@@ -3,6 +3,11 @@ import { createServerClient, parseCookieHeader } from '@supabase/ssr'
 const PUBLIC_PAGES = ['/login', '/register', '/forgot-password', '/reset-password'];
 
 export const onRequest = defineMiddleware(async (context, next) => {
+  // Redirect root path to /generate
+  if (context.url.pathname === '/') {
+    return context.redirect('/generate');
+  }
+
   if (!import.meta.env.SUPABASE_URL || !import.meta.env.SUPABASE_KEY) {
     throw new Error('Missing Supabase environment variables');
   }
