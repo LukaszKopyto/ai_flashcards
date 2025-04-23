@@ -1,6 +1,6 @@
 import { defineMiddleware } from 'astro:middleware';
 import { createServerClient, parseCookieHeader } from '@supabase/ssr'
-const PUBLIC_PAGES = ['/login', '/register', '/forgot-password'];
+const PUBLIC_PAGES = ['/login', '/register', '/forgot-password', '/reset-password'];
 
 export const onRequest = defineMiddleware(async (context, next) => {
   if (!import.meta.env.SUPABASE_URL || !import.meta.env.SUPABASE_KEY) {

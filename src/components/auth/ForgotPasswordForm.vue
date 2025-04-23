@@ -31,11 +31,23 @@ const handleSubmit = async (e: Event) => {
 
   try {
     isLoading.value = true;
-    // Backend integration will be implemented later
-    console.log('Form submitted:', formData.value);
+    const response = await fetch('/api/auth/forgot-password', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData.value),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Failed to send reset instructions');
+    }
+
     isEmailSent.value = true;
   } catch (error) {
-    toast.error('An error occurred while sending reset instructions');
+    toast.error(error instanceof Error ? error.message : 'An error occurred while sending reset instructions');
   } finally {
     isLoading.value = false;
   }

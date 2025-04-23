@@ -48,8 +48,26 @@ export const updatePasswordSchema = z
     path: ['newPassword'],
   });
 
+export const resetPasswordFormSchema = z.object({
+  newPassword: passwordValidation,
+  confirmNewPassword: z.string(),
+}).refine((data) => data.newPassword === data.confirmNewPassword, {
+  message: "Passwords don't match",
+  path: ['confirmNewPassword'],
+});
+
+export const resetPasswordSchema = z.object({
+  newPassword: passwordValidation,
+  confirmNewPassword: z.string(),
+  hash: z.string(),
+}).refine((data) => data.newPassword === data.confirmNewPassword, {
+  message: "Passwords don't match",
+  path: ['confirmNewPassword'],
+});
+
 // Type exports
 export type EmailFormData = z.infer<typeof emailSchema>;
 export type LoginForm = z.infer<typeof loginSchema>;
 export type RegisterForm = z.infer<typeof registerSchema>;
 export type UpdatePasswordForm = z.infer<typeof updatePasswordSchema>;
+export type ResetPasswordForm = z.infer<typeof resetPasswordFormSchema>;
