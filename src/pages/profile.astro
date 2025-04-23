@@ -1,0 +1,12 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import UserProfile from '@/components/profile/UserProfile.vue';
+---
+
+<Layout title="Profile - AI Flashcards">
+  <main class="container mx-auto px-4 py-8">
+    <div class="mx-auto max-w-2xl">
+      <UserProfile client:load />
+    </div>
+  </main>
+</Layout>
