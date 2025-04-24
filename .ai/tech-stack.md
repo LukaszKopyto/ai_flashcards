@@ -18,7 +18,13 @@ AI - Komunikacja z modelami przez usługę Openrouter.ai:
 - Dostęp do szerokiej gamy modeli (OpenAI, Anthropic, Google i wiele innych), które pozwolą nam znaleźć rozwiązanie zapewniające wysoką efektywność i niskie koszta
 - Pozwala na ustawianie limitów finansowych na klucze API
 
+Testing - Narzędzia do testowania aplikacji:
+
+- Vitest do testów jednostkowych i integracyjnych, z Vue Test Utils i Testing Library dla komponentów Vue
+- Playwright do kompleksowych testów end-to-end (E2E) z obsługą wielu przeglądarek
+- Integracja testów w pipeline CI/CD za pomocą GitHub Actions
+
 CI/CD i Hosting:
 
-- Github Actions do tworzenia pipeline’ów CI/CD
+- Github Actions do tworzenia pipeline'ów CI/CD
 - DigitalOcean do hostowania aplikacji za pośrednictwem obrazu docker

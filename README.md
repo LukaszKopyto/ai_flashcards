@@ -12,6 +12,11 @@ AI flashcards is an AI-powered flashcard generation web application designed to 
 - **Tailwind CSS 4**: A utility-first CSS framework for creating responsive designs.
 - **Shadcn/ui**: A component library for building modern, accessible UIs.
 
+## Testing Tools
+
+- **Unit & Integration Testing**: Vitest with Vue Test Utils and Testing Library for component and service testing.
+- **End-to-End Testing**: Playwright for multi-browser automated testing.
+
 ## Getting Started Locally
 
 Follow these steps to set up the project locally:
@@ -52,6 +57,9 @@ Follow these steps to set up the project locally:
 - `npm run preview` - Serves the built project locally for preview.
 - `npm run lint` - Runs ESLint to check for code quality issues.
 - `npm run lint:fix` - Automatically fixes fixable ESLint issues.
+- `npm run test` - Runs unit and integration tests with Vitest.
+- `npm run test:e2e` - Runs end-to-end tests with Playwright.
+- `npm run test:coverage` - Generates test coverage report.
 
 ## Supabase
 
