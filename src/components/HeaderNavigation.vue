@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { Menu, X, Zap } from 'lucide-vue-next';
 import { useAuthStore } from '@/stores/auth.store';
 import UserMenu from '@/components/UserMenu.vue';
 
 const authStore = useAuthStore();
-
-const isAuth = ref(false);
 
 const isOpen = ref(false);
 
@@ -14,6 +12,10 @@ const navigationItems = [
   { href: '/generate', label: 'Generate Flashcards' },
   { href: '/flashcards', label: 'Flashcards' },
 ];
+
+onMounted(async () => {
+  await authStore.initializeAuth();
+});
 </script>
 
 <template>

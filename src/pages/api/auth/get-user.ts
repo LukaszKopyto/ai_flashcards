@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 
 export const GET: APIRoute = async ({ locals }) => {
   try {
-    const { data: { session }, error } = await locals.supabase.auth.getSession();
+    const { data: { user }, error } = await locals.supabase.auth.getUser();
     
     if (error) {
       return new Response(JSON.stringify({ error: error.message }), {
@@ -10,7 +10,7 @@ export const GET: APIRoute = async ({ locals }) => {
       });
     }
 
-    return new Response(JSON.stringify({ session }), {
+    return new Response(JSON.stringify({ user }), {
       status: 200,
     });
   } catch (error) {

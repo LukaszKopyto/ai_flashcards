@@ -7,6 +7,11 @@ interface LoginCredentials {
   password: string
 }
 
+interface CustomUserResponse {
+  user: User | null
+  error: { message: string } | null
+}
+
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null)
   const isLoading = ref<boolean>(false)
@@ -19,15 +24,13 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = null
     
     try {
-      const response = await fetch('/api/auth/session')
-      const data = await response.json()
-
+      const response = await fetch('/api/auth/get-user')
+      const data: CustomUserResponse = await response.json()
       
       if (data.error) {
-        throw new Error(data.error)
+        throw new Error(data.error.message)
       }
-      
-      user.value = data.session?.user ?? null
+      user.value = data.user ?? null
     } catch (e) {
       handleError(e, 'Failed to initialize auth')
     } finally {
@@ -51,7 +54,7 @@ export const useAuthStore = defineStore('auth', () => {
       const data = await response.json()
       
       if (data.error) {
-        throw new Error(data.error)
+        throw new Error(data.error.message)
       }
       
       user.value = data.user
