@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import type { User } from '@supabase/supabase-js'
 
 interface LoginCredentials {
@@ -17,7 +17,7 @@ export const useAuthStore = defineStore('auth', () => {
   const isLoading = ref<boolean>(false)
   const error = ref<string | null>(null)
   
-  const isAuthenticated = computed(() => !!user.value)
+  const isAuthenticated = computed(() => user.value?.aud === 'authenticated')
 
   async function initializeAuth() {
     isLoading.value = true
@@ -79,7 +79,7 @@ export const useAuthStore = defineStore('auth', () => {
       const data = await response.json()
       
       if (data.error) {
-        throw new Error(data.error)
+        throw new Error(data.error.message)
       }
       
       user.value = null
@@ -101,10 +101,6 @@ export const useAuthStore = defineStore('auth', () => {
   function clearError(): void {
     error.value = null
   }
-
-  onMounted(() => {
-    initializeAuth()
-  })
 
   return {
     user,
