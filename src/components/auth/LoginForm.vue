@@ -60,20 +60,18 @@ const handleSubmit = async (e: Event) => {
       <p class="text-gray-500">Enter your credentials to access your account</p>
     </div>
 
-    <form @submit="handleSubmit" class="space-y-6">
+    <form @submit="handleSubmit" class="space-y-6" data-testid="login-form">
       <div class="space-y-2">
         <Label for="email">Email</Label>
         <Input
           id="email"
           v-model="formData.email"
           type="email"
+          data-testid="email-input"
           placeholder="Enter your email"
           :error="validationErrors.email?.[0]"
           @blur="setFieldTouched('email')"
         />
-        <p v-if="validationErrors.email?.[0]" class="mt-1 text-sm text-red-500">
-          {{ validationErrors.email[0] }}
-        </p>
       </div>
 
       <div class="space-y-2">
@@ -82,20 +80,20 @@ const handleSubmit = async (e: Event) => {
           id="password"
           v-model="formData.password"
           type="password"
+          data-testid="password-input"
           placeholder="Enter your password"
           :error="validationErrors.password?.[0]"
           @blur="setFieldTouched('password')"
         />
-        <p v-if="validationErrors.password?.[0]" class="mt-1 text-sm text-red-500">
-          {{ validationErrors.password[0] }}
-        </p>
       </div>
 
       <div class="flex justify-end">
         <a href="/forgot-password" class="text-sm text-blue-600 hover:text-blue-800"> Forgot password? </a>
       </div>
 
-      <Button type="submit" :disabled="isLoading" :loading="isLoading" class="w-full"> Sign In </Button>
+      <Button type="submit" :disabled="isLoading" :loading="isLoading" class="w-full" data-testid="login-button">
+        Sign In
+      </Button>
 
       <div class="text-center text-sm">
         Don't have an account?

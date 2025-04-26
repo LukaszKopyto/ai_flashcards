@@ -30,4 +30,7 @@ const inputClass = computed(() => {
 
 <template>
   <input :type="type" :class="inputClass" v-model="model" v-bind="$attrs" />
+  <p v-if="error" class="mt-1 text-sm text-red-500" data-testid="error-message">
+    {{ error }}
+  </p>
 </template>
