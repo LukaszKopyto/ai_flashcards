@@ -20,7 +20,7 @@ const handleLogout = async () => {
   <DropdownMenu v-if="authStore.user">
     <DropdownMenuTrigger>
       <Avatar>
-        <AvatarImage :src="authStore.user.user_metadata?.avatar_url" :alt="authStore.user.email" />
+        <AvatarImage :src="authStore.user.user_metadata?.avatar_url ?? ''" :alt="authStore.user.email" />
         <AvatarFallback>
           <CircleUserRound class="h-8 w-8 text-gray-500" />
         </AvatarFallback>
