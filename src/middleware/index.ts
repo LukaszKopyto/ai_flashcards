@@ -1,8 +1,8 @@
-import { defineMiddleware } from 'astro:middleware';
+import type { MiddlewareHandler } from 'astro';
 import { createServerClient, parseCookieHeader } from '@supabase/ssr'
 const PUBLIC_PAGES = ['/login', '/register', '/forgot-password', '/reset-password'];
 
-export const onRequest = defineMiddleware(async (context, next) => {
+export const onRequest: MiddlewareHandler = async (context, next) => {
   // Redirect root path to /generate
   if (context.url.pathname === '/') {
     return context.redirect('/generate');
@@ -55,4 +55,4 @@ export const onRequest = defineMiddleware(async (context, next) => {
   }
 
   return next();
-});
+};
