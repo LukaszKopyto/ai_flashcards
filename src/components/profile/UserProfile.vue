@@ -2,10 +2,12 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useAuthStore } from '@/stores/auth.store';
 import { formatDate } from '@/lib/utils';
+import type { User } from '@supabase/supabase-js';
 
-const authStore = useAuthStore();
+defineProps<{
+  user: User | null | undefined;
+}>();
 
 const handleChangePassword = () => {
   window.location.href = '/update-password';
@@ -21,24 +23,24 @@ const handleChangePassword = () => {
       <div class="space-y-4">
         <div class="h-14">
           <label class="text-muted-foreground text-sm font-medium">Username</label>
-          <Skeleton v-if="authStore.isLoading" class="h-7 w-48" />
-          <p v-else class="text-lg">{{ authStore.user?.email }}</p>
+          <Skeleton v-if="!user?.email" class="h-7 w-48" />
+          <p v-else class="text-lg">{{ user?.email }}</p>
         </div>
         <div class="h-14">
           <label class="text-muted-foreground text-sm font-medium">Email</label>
-          <Skeleton v-if="authStore.isLoading" class="h-7 w-48" />
-          <p v-else class="text-lg">{{ authStore.user?.email }}</p>
+          <Skeleton v-if="!user?.email" class="h-7 w-48" />
+          <p v-else class="text-lg">{{ user?.email }}</p>
         </div>
         <div class="h-14">
           <label class="text-muted-foreground text-sm font-medium">Member since</label>
-          <Skeleton v-if="authStore.isLoading" class="h-7 w-48" />
-          <p v-else class="text-lg">{{ authStore.user?.created_at ? formatDate(authStore.user.created_at) : '-' }}</p>
+          <Skeleton v-if="!user?.created_at" class="h-7 w-48" />
+          <p v-else class="text-lg">{{ user?.created_at ? formatDate(user.created_at) : '-' }}</p>
         </div>
         <div class="h-14">
           <label class="text-muted-foreground text-sm font-medium">Last sign in</label>
-          <Skeleton v-if="authStore.isLoading" class="h-7 w-48" />
+          <Skeleton v-if="!user?.last_sign_in_at" class="h-7 w-48" />
           <p v-else class="text-lg">
-            {{ authStore.user?.last_sign_in_at ? formatDate(authStore.user.last_sign_in_at) : '-' }}
+            {{ user?.last_sign_in_at ? formatDate(user.last_sign_in_at) : '-' }}
           </p>
         </div>
         <div class="pt-4">

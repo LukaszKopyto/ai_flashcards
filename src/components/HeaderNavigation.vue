@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import { Menu, X, Zap } from 'lucide-vue-next';
-import { useAuthStore } from '@/stores/auth.store';
 import UserMenu from '@/components/UserMenu.vue';
+import { Toaster } from '@/components/ui/sonner';
+import { toast } from 'vue-sonner';
+import type { User } from '@supabase/supabase-js';
 
-const authStore = useAuthStore();
+defineProps<{
+  user: User | null | undefined;
+}>();
 
 const isOpen = ref(false);
 
@@ -13,9 +17,21 @@ const navigationItems = [
   { href: '/flashcards', label: 'Flashcards' },
 ];
 
-onMounted(async () => {
-  await authStore.initializeAuth();
-});
+const handleLogout = async () => {
+  try {
+    const response = await fetch('/api/auth/logout', {
+      method: 'POST',
+    });
+    const data = await response.json();
+    if (data.error) {
+      throw new Error(data.error.message);
+    }
+    window.location.href = '/login';
+  } catch (e) {
+    toast.error('Failed to logout');
+    throw e;
+  }
+};
 </script>
 
 <template>
@@ -42,7 +58,7 @@ onMounted(async () => {
         </div>
         <div class="flex items-center">
           <div class="hidden md:block">
-            <UserMenu />
+            <UserMenu :user="user" @logout="handleLogout" />
           </div>
           <div class="md:hidden">
             <button
@@ -69,7 +85,7 @@ onMounted(async () => {
           <span>{{ item.label }}</span>
         </a>
         <div
-          @click="authStore.logout"
+          @click="handleLogout"
           class="block border-l-4 border-transparent px-6 py-4 text-lg hover:border-indigo-500 hover:text-indigo-600"
         >
           <span>Logout</span>
@@ -77,6 +93,7 @@ onMounted(async () => {
       </nav>
     </div>
   </header>
+  <Toaster position="top-center" rich-colors close-button />
 </template>
 
 <style scoped>

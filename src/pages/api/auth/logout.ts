@@ -9,7 +9,8 @@ export const POST: APIRoute = async ({ locals }) => {
         status: 400,
       });
     }
-
+    locals.user = null;
+    locals.session = null;
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
     });
