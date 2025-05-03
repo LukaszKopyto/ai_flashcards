@@ -62,7 +62,7 @@ const handleSubmit = async (e: Event) => {
 
     <form @submit="handleSubmit" class="space-y-6" data-testid="login-form">
       <div class="space-y-2">
-        <Label for="email">Email</Label>
+        <Label for="email" data-testid="email-label">Email</Label>
         <Input
           id="email"
           v-model="formData.email"
@@ -72,10 +72,13 @@ const handleSubmit = async (e: Event) => {
           :error="validationErrors.email?.[0]"
           @blur="setFieldTouched('email')"
         />
+        <span v-if="validationErrors.email?.[0]" data-testid="email-error" class="text-sm text-red-500">
+          {{ validationErrors.email[0] }}
+        </span>
       </div>
 
       <div class="space-y-2">
-        <Label for="password">Password</Label>
+        <Label for="password" data-testid="password-label">Password</Label>
         <Input
           id="password"
           v-model="formData.password"
@@ -85,19 +88,24 @@ const handleSubmit = async (e: Event) => {
           :error="validationErrors.password?.[0]"
           @blur="setFieldTouched('password')"
         />
+        <span v-if="validationErrors.password?.[0]" data-testid="password-error" class="text-sm text-red-500">
+          {{ validationErrors.password[0] }}
+        </span>
       </div>
 
       <div class="flex justify-end">
-        <a href="/forgot-password" class="text-sm text-blue-600 hover:text-blue-800"> Forgot password? </a>
+        <a href="/forgot-password" class="text-sm text-blue-600 hover:text-blue-800" data-testid="forgot-password-link">
+          Forgot password?
+        </a>
       </div>
 
       <Button type="submit" :disabled="isLoading" :loading="isLoading" class="w-full" data-testid="login-button">
-        Sign In
+        <span data-testid="login-button-text">{{ isLoading ? 'Signing in...' : 'Sign In' }}</span>
       </Button>
 
       <div class="text-center text-sm">
         Don't have an account?
-        <a href="/register" class="text-blue-600 hover:text-blue-800"> Create one now </a>
+        <a href="/register" class="text-blue-600 hover:text-blue-800" data-testid="register-link"> Create one now </a>
       </div>
     </form>
 

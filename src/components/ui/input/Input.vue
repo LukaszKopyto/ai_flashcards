@@ -6,6 +6,7 @@ interface Props {
   type?: string;
   error?: string;
   class?: string;
+  dataTestId?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -29,7 +30,7 @@ const inputClass = computed(() => {
 </script>
 
 <template>
-  <input :type="type" :class="inputClass" v-model="model" v-bind="$attrs" />
+  <input :type="type" :class="inputClass" v-model="model" :data-testid="dataTestId" v-bind="$attrs" />
   <p v-if="error" class="mt-1 text-sm text-red-500" data-testid="error-message">
     {{ error }}
   </p>

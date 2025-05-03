@@ -27,7 +27,7 @@ const props = withDefaults(defineProps<Props>(), {
     :class="cn(buttonVariants({ variant, size }), props.class)"
   >
     <template v-if="props.loading">
-      <Loader2 class="mr-2 inline-block animate-spin" :size="16" />
+      <Loader2 class="mr-2 inline-block animate-spin" :size="16" data-testid="button-spinner" />
       <span><slot /></span>
     </template>
     <template v-else>

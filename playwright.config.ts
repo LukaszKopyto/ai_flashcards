@@ -1,4 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
+import dotenv from 'dotenv';
+
+// Load environment variables from .env.test
+dotenv.config({ path: '.env.test' });
 
 export default defineConfig({
   testDir: './e2e',
@@ -19,8 +23,9 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'pnpm run preview',
-    url: 'http://localhost:4321',
+    command: 'npm run preview',
+    url: 'http://localhost:4321/',
+    timeout: 120 * 1000,
     reuseExistingServer: !process.env.CI,
   },
 }); 
