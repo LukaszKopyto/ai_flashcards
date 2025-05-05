@@ -3,11 +3,12 @@ import { LoginPage } from '../page-objects/LoginPage';
 
 const hasAuthCredentials = Boolean(process.env.E2E_USERNAME && process.env.E2E_PASSWORD);
 
+test.describe.configure({ mode: 'serial' });
 test.describe('Login Page', () => {
   let loginPage: LoginPage;
 
   test.beforeEach(async ({ page }) => {
-    await page.context().clearCookies();
+    // await page.context().clearCookies();
     loginPage = new LoginPage(page);
     await loginPage.goto();
   });
@@ -72,7 +73,7 @@ test.describe('Login Page', () => {
     await loginPage.isPageLoaded();
 
     await loginPage.login('invalid@example.com', 'invalidpassword');
-    await page.waitForTimeout(100);
+    // await page.waitForTimeout(100);
 
     await expect(loginPage.getEmailError()).not.toBeNull();
     await expect(loginPage.getPasswordError()).not.toBeNull();

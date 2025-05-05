@@ -54,29 +54,16 @@ export class LoginPage extends BasePage {
   }
 
   async login(email: string, password: string) {
-    // Clear the fields first
     await this.emailInput.clear();
     await this.passwordInput.clear();
-    
-    // Fill email and ensure it's set
+
     await this.emailInput.fill(email);
-    await this.emailInput.press('Tab'); // Trigger blur event
-    await this.page.waitForTimeout(150);
     await expect(this.emailInput).toHaveValue(email);
     
-    // Fill password and ensure it's set
     await this.passwordInput.fill(password);
-    await this.passwordInput.press('Tab'); // Trigger blur event
-    await this.page.waitForTimeout(150);
     await expect(this.passwordInput).toHaveValue(password);
-    
-    // Click the button only if both fields are filled correctly
-    if (await this.emailInput.inputValue() === email && 
-        await this.passwordInput.inputValue() === password) {
-      await this.loginButton.click();
-    } else {
-      throw new Error('Form fields were not filled correctly');
-    }
+  
+    await this.loginButton.click();
   }
 
   async waitForLoginSuccess() {
