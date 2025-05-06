@@ -29,7 +29,7 @@ Follow these steps to set up the project locally:
 
 2. **Set the Node Version:**
    Ensure you have the correct Node.js version as specified in the `.nvmrc` file.
-   Current version it's **22.14.0**
+   Current version is **22.14.0**
 
    ```bash
    nvm use
