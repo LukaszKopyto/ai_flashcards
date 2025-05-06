@@ -43,6 +43,13 @@ jobs:
       - name: Install Playwright Browsers
         run: pnpm exec playwright install --with-deps
 
+      - name: Set up Supabase env vars
+        run: |
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> $GITHUB_ENV
+          echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> $GITHUB_ENV
+          echo "E2E_USERNAME=${{ secrets.E2E_USERNAME }}" >> $GITHUB_ENV
+          echo "E2E_PASSWORD=${{ secrets.E2E_PASSWORD }}" >> $GITHUB_ENV
+
       - name: Run unit and integration tests
         run: pnpm exec vitest run
 
