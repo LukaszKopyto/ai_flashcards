@@ -17,8 +17,20 @@ const gitignorePath = path.resolve(__dirname, '.gitignore');
 const baseConfig = tseslint.config({
   extends: [eslint.configs.recommended, tseslint.configs.strict, tseslint.configs.stylistic],
   rules: {
-    'no-console': 'warn',
+    'no-console': ['error', { allow: ['warn', 'error'] }],
     'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      {
+        args: 'all',
+        argsIgnorePattern: '^_',
+        caughtErrors: 'all',
+        caughtErrorsIgnorePattern: '^_',
+        destructuredArrayIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        ignoreRestSiblings: true,
+      },
+    ],
   },
 });
 
@@ -35,20 +47,22 @@ const jsxA11yConfig = tseslint.config({
 
 const vueConfig = tseslint.config({
   files: ['**/*.vue'],
-  extends: [
-    ...pluginVue.configs['flat/recommended'],
-    ...pluginVue.configs['flat/typescript']
-  ],
+  extends: [pluginVue.configs['flat/recommended']],
   languageOptions: {
     parser: pluginVue.configs['flat/parser'],
+    parserOptions: {
+      parser: tseslint.parser,
+      extraFileExtensions: ['.vue'],
+      project: './tsconfig.json',
+    },
     sourceType: 'module',
     globals: {
       ...globals.browser,
     },
   },
   rules: {
-    'vue/script-setup-uses-vars': 'error'
-  }
+    'vue/multi-word-component-names': 'off',
+  },
 });
 
 export default tseslint.config(
