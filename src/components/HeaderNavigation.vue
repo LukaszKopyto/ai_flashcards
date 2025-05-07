@@ -62,10 +62,10 @@ const handleLogout = async () => {
           </div>
           <div class="md:hidden">
             <button
-              @click="isOpen = !isOpen"
               class="inline-flex items-center justify-center rounded-md p-2 hover:bg-gray-100 focus:outline-none"
               :aria-expanded="isOpen"
               aria-controls="mobile-menu"
+              @click="isOpen = !isOpen"
             >
               <span class="sr-only">{{ isOpen ? 'Close menu' : 'Open menu' }}</span>
               <component :is="isOpen ? X : Menu" class="h-6 w-6" />
@@ -85,8 +85,8 @@ const handleLogout = async () => {
           <span>{{ item.label }}</span>
         </a>
         <div
-          @click="handleLogout"
           class="block border-l-4 border-transparent px-6 py-4 text-lg hover:border-indigo-500 hover:text-indigo-600"
+          @click="handleLogout"
         >
           <span>Logout</span>
         </div>

@@ -88,4 +88,4 @@ export function useFlashcards() {
     saveEditedFlashcard,
     rejectFlashcard,
   };
-} 
+}

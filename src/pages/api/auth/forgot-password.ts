@@ -8,9 +8,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     if (!validationResult.success) {
       return new Response(
-        JSON.stringify({ 
+        JSON.stringify({
           error: 'Invalid request data',
-          details: validationResult.error.errors 
+          details: validationResult.error.errors,
         }),
         { status: 400 }
       );
@@ -19,26 +19,16 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const { email } = validationResult.data;
 
     const { error } = await locals.supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${import.meta.env.SITE}/reset-password`
+      redirectTo: `${import.meta.env.SITE}/reset-password`,
     });
 
     if (error) {
-      return new Response(
-        JSON.stringify({ error: 'Failed to send reset password email' }),
-        { status: 500 }
-      );
+      return new Response(JSON.stringify({ error: 'Failed to send reset password email' }), { status: 500 });
     }
 
-    return new Response(
-      JSON.stringify({ message: 'Password reset instructions sent successfully' }),
-      { status: 200 }
-    );
-
+    return new Response(JSON.stringify({ message: 'Password reset instructions sent successfully' }), { status: 200 });
   } catch (error) {
     console.error('Password reset error:', error);
-    return new Response(
-      JSON.stringify({ error: 'Internal server error' }),
-      { status: 500 }
-    );
+    return new Response(JSON.stringify({ error: 'Internal server error' }), { status: 500 });
   }
-} 
+};

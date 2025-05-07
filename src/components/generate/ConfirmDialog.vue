@@ -16,9 +16,9 @@ defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:isOpen', value: boolean): void;
-  (e: 'confirm'): void;
-  (e: 'cancel'): void;
+  'update:isOpen': [boolean];
+  confirm: [];
+  cancel: [];
 }>();
 
 const handleConfirm = () => {

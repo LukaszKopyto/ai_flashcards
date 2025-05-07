@@ -11,15 +11,15 @@ const TOKEN_BYTES = 32;
 export function generateCsrfToken(cookies: AstroCookies): string {
   const token = randomBytes(TOKEN_BYTES).toString('hex');
   const hashedToken = hashToken(token);
-  
+
   cookies.set(CSRF_COOKIE_NAME, hashedToken, {
     httpOnly: true,
     secure: true,
     sameSite: 'strict',
     path: '/',
-    maxAge: 60 * 60 // 1 hour
+    maxAge: 60 * 60, // 1 hour
   });
-  
+
   return token;
 }
 
@@ -29,11 +29,11 @@ export function generateCsrfToken(cookies: AstroCookies): string {
 export function validateCsrfToken(request: Request, cookies: AstroCookies): boolean {
   const cookieToken = cookies.get(CSRF_COOKIE_NAME)?.value;
   const headerToken = request.headers.get(CSRF_HEADER_NAME);
-  
+
   if (!cookieToken || !headerToken) {
     return false;
   }
-  
+
   const hashedHeaderToken = hashToken(headerToken);
   return cookieToken === hashedHeaderToken;
 }
@@ -43,4 +43,4 @@ export function validateCsrfToken(request: Request, cookies: AstroCookies): bool
  */
 function hashToken(token: string): string {
   return createHash('sha256').update(token).digest('hex');
-} 
+}

@@ -8,23 +8,23 @@ import { toast } from 'vue-sonner';
 // Mock data fixtures
 const validLoginData = {
   email: 'test@example.com',
-  password: 'Password123!'
+  password: 'Password123!',
 };
 
 const invalidLoginData = {
   email: 'invalid-email',
-  password: 'short'
+  password: 'short',
 };
 
 // Mock API responses
 const successResponse = {
   ok: true,
-  json: () => Promise.resolve({ success: true })
+  json: () => Promise.resolve({ success: true }),
 };
 
 const errorResponse = {
   ok: false,
-  json: () => Promise.resolve({ error: 'Invalid credentials' })
+  json: () => Promise.resolve({ error: 'Invalid credentials' }),
 };
 
 // Mock the modules
@@ -47,10 +47,16 @@ let mockHandleSubmit = vi.fn().mockReturnValue(true);
 
 vi.mock('@/composables/useFormValidation', () => ({
   useFormValidation: () => ({
-    get validationErrors() { return mockValidationErrors; },
-    get isValid() { return mockIsValid; },
+    get validationErrors() {
+      return mockValidationErrors;
+    },
+    get isValid() {
+      return mockIsValid;
+    },
     setFieldTouched: vi.fn(),
-    get handleSubmit() { return mockHandleSubmit; },
+    get handleSubmit() {
+      return mockHandleSubmit;
+    },
   }),
 }));
 
@@ -81,7 +87,7 @@ afterEach(() => {
 describe('LoginForm', () => {
   it('renders the form correctly', () => {
     const wrapper = mount(LoginForm);
-    
+
     expect(wrapper.find('form').exists()).toBe(true);
     expect(wrapper.find('input[type="email"]').exists()).toBe(true);
     expect(wrapper.find('input[type="password"]').exists()).toBe(true);
@@ -90,8 +96,8 @@ describe('LoginForm', () => {
 
   it('initializes with empty form data', () => {
     const wrapper = mount(LoginForm);
-    
-    const vm = wrapper.vm as any;
+
+    const vm = wrapper.vm as unknown as typeof LoginForm;
     expect(vm.formData).toEqual({
       email: '',
       password: '',
@@ -105,12 +111,12 @@ describe('LoginForm', () => {
     };
     mockIsValid = false;
     mockHandleSubmit = vi.fn().mockReturnValue(false);
-    
+
     const wrapper = mount(LoginForm);
-    
+
     await wrapper.find('[data-testid="login-form"]').trigger('submit');
     await nextTick();
-    
+
     const errorMessages = wrapper.findAll('[data-testid="error-message"]');
     expect(errorMessages.length).toBeGreaterThan(0);
     expect(mockFetch).not.toHaveBeenCalled();
@@ -119,14 +125,14 @@ describe('LoginForm', () => {
   it('submits the form when valid data is provided', async () => {
     const wrapper = mount(LoginForm);
     mockFetch.mockResolvedValueOnce(successResponse);
-    
+
     await wrapper.find('[data-testid="email-input"]').setValue(validLoginData.email);
     await wrapper.find('[data-testid="password-input"]').setValue(validLoginData.password);
-    
+
     await wrapper.find('[data-testid="login-form"]').trigger('submit');
-    
+
     await flushPromises();
-    
+
     expect(mockFetch).toHaveBeenCalledWith('/api/auth/login', {
       method: 'POST',
       headers: {
@@ -134,7 +140,7 @@ describe('LoginForm', () => {
       },
       body: JSON.stringify(validLoginData),
     });
-    
+
     expect(window.location.href).toBe('/generate');
   });
 
@@ -143,55 +149,58 @@ describe('LoginForm', () => {
     mockFetch.mockResolvedValueOnce(errorResponse);
     await wrapper.find('[data-testid="email-input"]').setValue(validLoginData.email);
     await wrapper.find('[data-testid="password-input"]').setValue(validLoginData.password);
-    
+
     await wrapper.find('[data-testid="login-form"]').trigger('submit');
     await flushPromises();
-    
+
     expect(toast.error).toHaveBeenCalledWith('Invalid credentials');
     expect(window.location.href).not.toBe('/generate');
   });
 
   it('shows generic error toast when fetch throws an exception', async () => {
     const wrapper = mount(LoginForm);
-    
+
     // Mock fetch throwing an error
     mockFetch.mockRejectedValueOnce(new Error('Network error'));
-    
+
     // Fill in valid form data
     await wrapper.find('[data-testid="email-input"]').setValue(validLoginData.email);
     await wrapper.find('[data-testid="password-input"]').setValue(validLoginData.password);
-    
+
     await wrapper.find('[data-testid="login-form"]').trigger('submit');
-    
+
     await flushPromises();
-    
+
     expect(toast.error).toHaveBeenCalledWith('An error occurred while logging in');
   });
 
   it('disables the submit button during form submission and enables it afterwards', async () => {
     const wrapper = mount(LoginForm);
-    
+
     vi.useFakeTimers();
-    
-    mockFetch.mockImplementationOnce(() => new Promise(resolve => {
-      setTimeout(() => {
-        resolve(successResponse);
-      }, 100);
-    }));
-    
+
+    mockFetch.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(successResponse);
+          }, 100);
+        })
+    );
+
     await wrapper.find('[data-testid="email-input"]').setValue(validLoginData.email);
     await wrapper.find('[data-testid="password-input"]').setValue(validLoginData.password);
-    
+
     await wrapper.find('[data-testid="login-form"]').trigger('submit');
-    
+
     const button = wrapper.find('[data-testid="login-button"]');
     expect(button.attributes('disabled')).toBeDefined();
-    
+
     vi.advanceTimersByTime(100);
     await flushPromises();
-    
+
     expect(button.attributes('disabled')).toBeUndefined();
-    
+
     vi.useRealTimers();
   });
 
@@ -199,4 +208,4 @@ describe('LoginForm', () => {
     expect(loginSchema.safeParse(validLoginData).success).toBe(true);
     expect(loginSchema.safeParse(invalidLoginData).success).toBe(false);
   });
-}); 
+});

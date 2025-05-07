@@ -57,7 +57,7 @@ export class GenerationService {
         updated_at: new Date().toISOString(),
         generation_id: generation.id,
         user_id: userId,
-        state: 'initial' as const
+        state: 'initial' as const,
       }));
 
       const endTime = Date.now();

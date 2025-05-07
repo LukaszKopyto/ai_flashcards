@@ -24,17 +24,17 @@ test.describe('Login Page', () => {
 
   test('successful login flow', async ({ page }) => {
     test.skip(!hasAuthCredentials, 'Skipping test: E2E_USERNAME and E2E_PASSWORD environment variables are required');
-    
-    const testEmail = process.env.E2E_USERNAME!;
-    const testPassword = process.env.E2E_PASSWORD!;
+
+    const testEmail = process.env.E2E_USERNAME ?? '';
+    const testPassword = process.env.E2E_PASSWORD ?? '';
 
     await loginPage.waitForLoginPage();
     await loginPage.isPageLoaded();
-    
+
     await loginPage.login(testEmail, testPassword);
-    
+
     await page.waitForTimeout(100);
-    
+
     expect(await loginPage.getEmailError()).toBeNull();
     expect(await loginPage.getPasswordError()).toBeNull();
 
@@ -43,19 +43,16 @@ test.describe('Login Page', () => {
 
   test('send login request with email and password', async ({ page }) => {
     test.skip(!hasAuthCredentials, 'Skipping test: E2E_USERNAME and E2E_PASSWORD environment variables are required');
-    
-    const testEmail = process.env.E2E_USERNAME!;
-    const testPassword = process.env.E2E_PASSWORD!;
 
+    const testEmail = process.env.E2E_USERNAME ?? '';
+    const testPassword = process.env.E2E_PASSWORD ?? '';
 
-    const loginRequestPromise = page.waitForRequest(request =>  
-      request.url().includes('/api/auth/login') && 
-      request.method() === 'POST'
+    const loginRequestPromise = page.waitForRequest(
+      (request) => request.url().includes('/api/auth/login') && request.method() === 'POST'
     );
 
-    const loginResponsePromise = page.waitForResponse(response =>
-      response.url().includes('/api/auth/login') && 
-      response.request().method() === 'POST'
+    const loginResponsePromise = page.waitForResponse(
+      (response) => response.url().includes('/api/auth/login') && response.request().method() === 'POST'
     );
 
     await loginPage.login(testEmail, testPassword);
@@ -68,7 +65,7 @@ test.describe('Login Page', () => {
     expect(response.status()).toBe(200);
   });
 
-  test('login with invalid credentials', async ({ page }) => {
+  test('login with invalid credentials', async () => {
     await loginPage.waitForLoginPage();
     await loginPage.isPageLoaded();
 
@@ -81,40 +78,34 @@ test.describe('Login Page', () => {
 
   test('displays loading state during login', async ({ page }) => {
     test.skip(!hasAuthCredentials, 'Skipping test: E2E_USERNAME and E2E_PASSWORD environment variables are required');
-    
-    const testEmail = process.env.E2E_USERNAME!;
-    const testPassword = process.env.E2E_PASSWORD!;
-    
+
+    const testEmail = process.env.E2E_USERNAME ?? '';
+    const testPassword = process.env.E2E_PASSWORD ?? '';
+
     await page.route('**/api/auth/login', async (route) => {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       await route.continue();
     });
 
     const loginPromise = loginPage.login(testEmail, testPassword);
 
-    await expect(
-      async () => {
-        const isDisabled = await loginPage.isLoginButtonDisabled();
-        const isLoading = await loginPage.isLoading();
-        return isDisabled && isLoading;
-      },
-      'Button should be disabled and loading state should be visible'
-    ).toPass({ timeout: 5000 });
+    await expect(async () => {
+      const isDisabled = await loginPage.isLoginButtonDisabled();
+      const isLoading = await loginPage.isLoading();
+      return isDisabled && isLoading;
+    }, 'Button should be disabled and loading state should be visible').toPass({ timeout: 5000 });
 
     await loginPromise;
   });
 
-  test('displays validation errors for empty fields', async ({ page }) => {
+  test('displays validation errors for empty fields', async () => {
     await loginPage.login('', '');
 
-    await expect(
-      async () => {
-        const emailError = await loginPage.getEmailError();
-        const passwordError = await loginPage.getPasswordError();
-        return emailError !== null && passwordError !== null;
-      },
-      'Both email and password error messages should be visible'
-    ).toPass({ timeout: 5000 });
+    await expect(async () => {
+      const emailError = await loginPage.getEmailError();
+      const passwordError = await loginPage.getPasswordError();
+      return emailError !== null && passwordError !== null;
+    }, 'Both email and password error messages should be visible').toPass({ timeout: 5000 });
   });
 
   test('navigates to forgot password page', async ({ page }) => {
@@ -126,4 +117,4 @@ test.describe('Login Page', () => {
     await loginPage.registerLink.click();
     await expect(page).toHaveURL('/register', { timeout: 5000 });
   });
-}); 
+});

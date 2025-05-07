@@ -13,12 +13,7 @@ const formData = ref<LoginForm>({
   password: '',
 });
 
-const {
-  validationErrors,
-  isValid,
-  setFieldTouched,
-  handleSubmit: validateForm,
-} = useFormValidation(loginSchema, formData);
+const { validationErrors, setFieldTouched, handleSubmit: validateForm } = useFormValidation(loginSchema, formData);
 
 const isLoading = ref(false);
 
@@ -45,7 +40,7 @@ const handleSubmit = async (e: Event) => {
     }
 
     window.location.href = '/generate';
-  } catch (error) {
+  } catch (_error) {
     toast.error('An error occurred while logging in');
   } finally {
     isLoading.value = false;
@@ -60,7 +55,7 @@ const handleSubmit = async (e: Event) => {
       <p class="text-gray-500">Enter your credentials to access your account</p>
     </div>
 
-    <form @submit="handleSubmit" class="space-y-6" data-testid="login-form">
+    <form class="space-y-6" data-testid="login-form" @submit="handleSubmit">
       <div class="space-y-2">
         <Label for="email" data-testid="email-label">Email</Label>
         <Input

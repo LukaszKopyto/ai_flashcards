@@ -10,9 +10,7 @@ export function useFlashcardsBulkOperations() {
     flashcards: ProposalFlashcardDto[],
     generationId: string | null
   ): Promise<boolean> => {
-    const flashcardsToSave = flashcards.filter(
-      (f) => f.state !== FLASHCARD_PROPOSAL_STATE.ACCEPTED
-    );
+    const flashcardsToSave = flashcards.filter((f) => f.state !== FLASHCARD_PROPOSAL_STATE.ACCEPTED);
 
     if (flashcardsToSave.length === 0) {
       toast.info('No flashcards to save');
@@ -44,7 +42,7 @@ export function useFlashcardsBulkOperations() {
       if (failed > 0) {
         toast.error(`Failed to save ${failed} flashcards`);
       }
-      
+
       if (successful > 0) {
         toast.success(`Successfully saved ${successful} flashcards`);
       }
@@ -64,4 +62,4 @@ export function useFlashcardsBulkOperations() {
     isSavingBulk,
     bulkSaveFlashcards,
   };
-} 
+}

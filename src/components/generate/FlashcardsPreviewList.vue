@@ -9,9 +9,9 @@ interface Props {
 defineProps<Props>();
 
 const emit = defineEmits<{
-  (e: 'accept', flashcard: ProposalFlashcardDto): void;
-  (e: 'edit', flashcard: ProposalFlashcardDto): void;
-  (e: 'reject', flashcard: ProposalFlashcardDto): void;
+  accept: [ProposalFlashcardDto];
+  edit: [ProposalFlashcardDto];
+  reject: [ProposalFlashcardDto];
 }>();
 </script>
 

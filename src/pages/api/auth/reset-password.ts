@@ -7,10 +7,7 @@ export const POST: APIRoute = async ({ request, locals, cookies }) => {
   try {
     // Validate CSRF token
     if (!validateCsrfToken(request, cookies)) {
-      return createSecureJsonResponse(
-        { error: 'Invalid request token' },
-        403
-      );
+      return createSecureJsonResponse({ error: 'Invalid request token' }, 403);
     }
 
     // Parse and validate request body
@@ -18,10 +15,13 @@ export const POST: APIRoute = async ({ request, locals, cookies }) => {
     const validationResult = resetPasswordSchema.safeParse(body);
 
     if (!validationResult.success) {
-      return createSecureJsonResponse({ 
-        error: 'Invalid request data',
-        details: validationResult.error.errors 
-      }, 400);
+      return createSecureJsonResponse(
+        {
+          error: 'Invalid request data',
+          details: validationResult.error.errors,
+        },
+        400
+      );
     }
 
     const { newPassword, hash } = validationResult.data;
@@ -29,77 +29,83 @@ export const POST: APIRoute = async ({ request, locals, cookies }) => {
     // First verify the recovery token
     const { error: verifyError, data } = await locals.supabase.auth.verifyOtp({
       token_hash: hash,
-      type: 'recovery'
+      type: 'recovery',
     });
 
     if (verifyError) {
       console.error('Password reset verification failed:', {
         error: verifyError.message,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
 
-      return createSecureJsonResponse({ 
-        error: 'Invalid or expired reset link. Please request a new password reset.'
-      }, 400);
+      return createSecureJsonResponse(
+        {
+          error: 'Invalid or expired reset link. Please request a new password reset.',
+        },
+        400
+      );
     }
 
     // Check if the new password is the same as the current one
     const { error: signInError } = await locals.supabase.auth.signInWithPassword({
       email: data.user?.email ?? '',
-      password: newPassword
+      password: newPassword,
     });
 
     if (!signInError) {
-      return createSecureJsonResponse({ 
-        error: 'New password must be different from your current password'
-      }, 400);
+      return createSecureJsonResponse(
+        {
+          error: 'New password must be different from your current password',
+        },
+        400
+      );
     }
 
     // Then update the password
     const { error: updateError } = await locals.supabase.auth.updateUser({
-      password: newPassword
+      password: newPassword,
     });
 
     if (updateError) {
       console.error('Password update failed:', {
         error: updateError.message,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
 
-      return createSecureJsonResponse({ 
-        error: 'Failed to reset password. Please try again or contact support.'
-      }, 500);
+      return createSecureJsonResponse(
+        {
+          error: 'Failed to reset password. Please try again or contact support.',
+        },
+        500
+      );
     }
 
     // Sign out all other sessions
     const { error: signOutError } = await locals.supabase.auth.signOut({
-      scope: 'global'
+      scope: 'global',
     });
 
     if (signOutError) {
       console.warn('Failed to sign out all sessions:', {
         error: signOutError.message,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
 
-    // Log successful password reset (without sensitive data)
-    console.info('Password reset successful', {
-      timestamp: new Date().toISOString()
-    });
-
     return createSecureJsonResponse({
-      message: 'Password reset successfully. Please log in with your new password.'
+      message: 'Password reset successfully. Please log in with your new password.',
     });
-
   } catch (error) {
     console.error('Password reset error:', {
       error: error instanceof Error ? error.message : 'Unknown error',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
-    return createSecureJsonResponse({ 
-      error: 'An unexpected error occurred. Please try again later.'
-    }, 500);
+    return createSecureJsonResponse(
+      {
+        error: 'An unexpected error occurred. Please try again later.',
+      },
+      500
+    );
   }
-} 
+};

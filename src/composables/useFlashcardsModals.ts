@@ -11,7 +11,7 @@ export function useFlashcardsModals(options: UseFlashcardsModalsOptions) {
 
   const isEditModalOpen = ref(false);
   const editingFlashcard = ref<ProposalFlashcardDto | null>(null);
-  
+
   const isConfirmDialogOpen = ref(false);
   const flashcardToReject = ref<ProposalFlashcardDto | null>(null);
 
@@ -57,4 +57,4 @@ export function useFlashcardsModals(options: UseFlashcardsModalsOptions) {
     handleRejectConfirm,
     handleRejectCancel,
   };
-} 
+}

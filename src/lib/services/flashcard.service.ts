@@ -74,7 +74,10 @@ export class FlashcardService {
       }
 
       if (!data) {
-        throw new FlashcardError('Flashcard was not found or user does not have permission to update it', 'DATABASE_ERROR');
+        throw new FlashcardError(
+          'Flashcard was not found or user does not have permission to update it',
+          'DATABASE_ERROR'
+        );
       }
 
       // Return DTO

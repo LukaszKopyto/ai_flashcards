@@ -12,12 +12,7 @@ const formData = ref<EmailFormData>({
   email: '',
 });
 
-const {
-  validationErrors,
-  isValid,
-  setFieldTouched,
-  handleSubmit: validateForm,
-} = useFormValidation(emailSchema, formData);
+const { validationErrors, setFieldTouched, handleSubmit: validateForm } = useFormValidation(emailSchema, formData);
 
 const isLoading = ref(false);
 const isEmailSent = ref(false);
@@ -58,15 +53,15 @@ const handleSubmit = async (e: Event) => {
   <div class="container mx-auto max-w-md space-y-8 py-8">
     <div class="space-y-2 text-center">
       <h1 class="text-3xl font-bold">Reset Password</h1>
-      <p class="text-gray-500" v-if="!isEmailSent">
+      <p v-if="!isEmailSent" class="text-gray-500">
         Enter your email address and we'll send you instructions to reset your password
       </p>
-      <p class="text-green-600" v-else>
+      <p v-else class="text-green-600">
         If an account exists for {{ formData.email }}, you will receive password reset instructions
       </p>
     </div>
 
-    <form v-if="!isEmailSent" @submit="handleSubmit" class="space-y-6">
+    <form v-if="!isEmailSent" class="space-y-6" @submit="handleSubmit">
       <div class="space-y-2">
         <Label for="email">Email</Label>
         <Input
@@ -75,8 +70,8 @@ const handleSubmit = async (e: Event) => {
           type="email"
           placeholder="Enter your email"
           :error="validationErrors.email?.[0]"
-          @blur="setFieldTouched('email')"
           required
+          @blur="setFieldTouched('email')"
         />
         <p v-if="validationErrors.email?.[0]" class="mt-1 text-sm text-red-500">
           {{ validationErrors.email[0] }}

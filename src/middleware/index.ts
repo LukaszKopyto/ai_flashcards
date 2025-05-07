@@ -1,4 +1,4 @@
-import { sequence } from "astro:middleware";
+import { sequence } from 'astro:middleware';
 import type { MiddlewareHandler } from 'astro';
 import { createServerClient, parseCookieHeader } from '@supabase/ssr';
 
@@ -15,20 +15,18 @@ const supabaseClientMiddleware: MiddlewareHandler = async (context, next) => {
   if (!import.meta.env.SUPABASE_URL || !import.meta.env.SUPABASE_KEY) {
     throw new Error('Missing Supabase environment variables');
   }
-  const supabase = createServerClient(
-    import.meta.env.SUPABASE_URL,
-    import.meta.env.SUPABASE_KEY,
-    {
-      cookies: {
-        getAll: () => parseCookieHeader(context.request.headers.get('Cookie') ?? '').map(({ name, value }) => ({ name, value: value ?? '' })),
-        setAll: (cookiesToSet) => {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            context.cookies.set(name, value, options)
-          );
-        },
+  const supabase = createServerClient(import.meta.env.SUPABASE_URL, import.meta.env.SUPABASE_KEY, {
+    cookies: {
+      getAll: () =>
+        parseCookieHeader(context.request.headers.get('Cookie') ?? '').map(({ name, value }) => ({
+          name,
+          value: value ?? '',
+        })),
+      setAll: (cookiesToSet) => {
+        cookiesToSet.forEach(({ name, value, options }) => context.cookies.set(name, value, options));
       },
-    }
-  );
+    },
+  });
   context.locals.supabase = supabase;
   return next();
 };
@@ -44,16 +42,14 @@ const sessionMiddleware: MiddlewareHandler = async (context, next) => {
 
 const userMiddleware: MiddlewareHandler = async (context, next) => {
   const supabase = context.locals.supabase;
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   context.locals.user = user;
   return next();
 };
 
-const apiChain = sequence(
-  supabaseClientMiddleware,
-  sessionMiddleware,
-  userMiddleware
-);
+const apiChain = sequence(supabaseClientMiddleware, sessionMiddleware, userMiddleware);
 
 const authRedirectMiddleware: MiddlewareHandler = async (context, next) => {
   const session = context.locals.session;

@@ -2,16 +2,15 @@ import { type Page, type Locator, expect } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class LoginPage extends BasePage {
-  
   readonly emailInput: Locator;
   readonly passwordInput: Locator;
   readonly loginButton: Locator;
   readonly loginButtonText: Locator;
   readonly buttonSpinner: Locator;
-  
+
   readonly emailError: Locator;
   readonly passwordError: Locator;
-  
+
   readonly forgotPasswordLink: Locator;
   readonly registerLink: Locator;
 
@@ -20,16 +19,16 @@ export class LoginPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    
+
     this.emailInput = page.locator('input[data-testid="email-input"]');
     this.passwordInput = page.locator('input[data-testid="password-input"]');
     this.loginButton = page.getByTestId('login-button');
     this.loginButtonText = page.getByTestId('login-button-text');
     this.buttonSpinner = page.getByTestId('button-spinner');
-    
+
     this.emailError = page.getByTestId('email-input-error');
     this.passwordError = page.getByTestId('password-input-error');
-    
+
     this.forgotPasswordLink = page.getByTestId('forgot-password-link');
     this.registerLink = page.getByTestId('register-link');
   }
@@ -40,10 +39,10 @@ export class LoginPage extends BasePage {
 
   async isPageLoaded(): Promise<boolean> {
     return await Promise.all([
-        this.emailInput.isVisible(),
-        this.passwordInput.isVisible(),
-        this.loginButton.isVisible()
-    ]).then(results => results.every(Boolean));
+      this.emailInput.isVisible(),
+      this.passwordInput.isVisible(),
+      this.loginButton.isVisible(),
+    ]).then((results) => results.every(Boolean));
   }
 
   async verifyInitialState(): Promise<void> {
@@ -59,10 +58,10 @@ export class LoginPage extends BasePage {
 
     await this.emailInput.fill(email);
     await expect(this.emailInput).toHaveValue(email);
-    
+
     await this.passwordInput.fill(password);
     await expect(this.passwordInput).toHaveValue(password);
-  
+
     await this.loginButton.click();
   }
 
@@ -95,4 +94,4 @@ export class LoginPage extends BasePage {
   async isLoading(): Promise<boolean> {
     return await this.buttonSpinner.isVisible();
   }
-} 
+}
