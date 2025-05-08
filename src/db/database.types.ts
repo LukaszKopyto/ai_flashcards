@@ -143,7 +143,7 @@ export interface Database {
     };
     CompositeTypes: Record<never, never>;
   };
-};
+}
 
 type DefaultSchema = Database[Extract<keyof Database, 'public'>];
 

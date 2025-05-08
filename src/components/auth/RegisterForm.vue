@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { Button } from '@/components/ui/button';
 import Input from '@/components/ui/input/Input.vue';
 import { Label } from '@/components/ui/label';
@@ -14,12 +14,7 @@ const formData = ref<RegisterForm>({
   confirmPassword: '',
 });
 
-const {
-  validationErrors,
-  isValid,
-  setFieldTouched,
-  handleSubmit: validateForm,
-} = useFormValidation(registerSchema, formData);
+const { validationErrors, setFieldTouched, handleSubmit: validateForm } = useFormValidation(registerSchema, formData);
 
 const isLoading = ref(false);
 
@@ -49,7 +44,7 @@ const handleSubmit = async (e: Event) => {
     }
 
     window.location.href = '/login';
-  } catch (error) {
+  } catch (_error) {
     toast.error('An error occurred while registering');
   } finally {
     isLoading.value = false;
@@ -64,7 +59,7 @@ const handleSubmit = async (e: Event) => {
       <p class="text-gray-500">Enter your details to register</p>
     </div>
 
-    <form @submit="handleSubmit" class="space-y-6">
+    <form class="space-y-6" @submit="handleSubmit">
       <div class="space-y-2">
         <Label for="email">Email</Label>
         <Input
@@ -73,8 +68,8 @@ const handleSubmit = async (e: Event) => {
           type="email"
           placeholder="Enter your email"
           :error="validationErrors.email?.[0]"
-          @blur="setFieldTouched('email')"
           required
+          @blur="setFieldTouched('email')"
         />
         <p v-if="validationErrors.email?.[0]" class="mt-1 text-sm text-red-500">
           {{ validationErrors.email[0] }}
@@ -89,8 +84,8 @@ const handleSubmit = async (e: Event) => {
           type="password"
           placeholder="Create a password"
           :error="validationErrors.password?.[0]"
-          @blur="setFieldTouched('password')"
           required
+          @blur="setFieldTouched('password')"
         />
         <p v-if="validationErrors.password?.[0]" class="mt-1 text-sm text-red-500">
           {{ validationErrors.password[0] }}
@@ -108,8 +103,8 @@ const handleSubmit = async (e: Event) => {
           type="password"
           placeholder="Confirm your password"
           :error="validationErrors.confirmPassword?.[0]"
-          @blur="setFieldTouched('confirmPassword')"
           required
+          @blur="setFieldTouched('confirmPassword')"
         />
         <p v-if="validationErrors.confirmPassword?.[0]" class="mt-1 text-sm text-red-500">
           {{ validationErrors.confirmPassword[0] }}

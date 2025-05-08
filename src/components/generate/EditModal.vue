@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { z } from 'zod';
-import type { ProposalFlashcardDto, UpdateFlashcardCommand } from '../../types';
+import type { ProposalFlashcardDto } from '../../types';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';

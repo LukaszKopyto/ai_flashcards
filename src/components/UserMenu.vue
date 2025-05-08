@@ -12,9 +12,7 @@ const { user } = defineProps<{
   user: User | null | undefined;
 }>();
 
-defineEmits<{
-  (e: 'logout'): void;
-}>();
+defineEmits<(e: 'logout') => void>();
 </script>
 
 <template>

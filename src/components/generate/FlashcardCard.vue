@@ -9,12 +9,12 @@ interface Props {
   flashcard: ProposalFlashcardDto;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 
 const emit = defineEmits<{
-  (e: 'accept'): void;
-  (e: 'edit'): void;
-  (e: 'reject'): void;
+  accept: [];
+  edit: [];
+  reject: [];
 }>();
 </script>
 

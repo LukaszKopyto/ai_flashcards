@@ -14,9 +14,9 @@ export const POST: APIRoute = async ({ locals }) => {
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
     });
-  } catch (error) {
+  } catch (_error) {
     return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
     });
   }
-}; 
+};

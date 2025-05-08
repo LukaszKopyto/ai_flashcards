@@ -8,9 +8,7 @@ const props = defineProps<{
   modelValue?: string | number;
 }>();
 
-const emits = defineEmits<{
-  (e: 'update:modelValue', payload: string | number): void;
-}>();
+defineEmits<(e: 'update:modelValue', payload: string | number) => void>();
 
 const model = defineModel<string>({ default: '' });
 </script>

@@ -6,12 +6,14 @@ interface Props {
   type?: string;
   error?: string;
   class?: string;
-  dataTestId?: string;
+  testId?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   type: 'text',
   class: '',
+  testId: '',
+  error: '',
 });
 
 const model = defineModel<string>({ default: '' });
@@ -30,7 +32,7 @@ const inputClass = computed(() => {
 </script>
 
 <template>
-  <input :type="type" :class="inputClass" v-model="model" :data-testid="dataTestId" v-bind="$attrs" />
+  <input v-model="model" :type="type" :class="inputClass" v-bind="$attrs" />
   <p v-if="error" class="mt-1 text-sm text-red-500" data-testid="error-message">
     {{ error }}
   </p>

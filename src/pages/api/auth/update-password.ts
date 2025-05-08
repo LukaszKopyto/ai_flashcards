@@ -5,12 +5,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
   try {
     // Get current session
     const session = await locals.supabase.auth.getSession();
-    
+
     if (!session) {
-      return new Response(
-        JSON.stringify({ error: 'Unauthorized - Please log in' }),
-        { status: 401 }
-      );
+      return new Response(JSON.stringify({ error: 'Unauthorized - Please log in' }), { status: 401 });
     }
 
     // Parse and validate request body
@@ -19,9 +16,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     if (!validationResult.success) {
       return new Response(
-        JSON.stringify({ 
+        JSON.stringify({
           error: 'Invalid request data',
-          details: validationResult.error.errors 
+          details: validationResult.error.errors,
         }),
         { status: 400 }
       );
@@ -36,34 +33,21 @@ export const POST: APIRoute = async ({ request, locals }) => {
     });
 
     if (verifyError) {
-      return new Response(
-        JSON.stringify({ error: 'Current password is incorrect' }),
-        { status: 400 }
-      );
+      return new Response(JSON.stringify({ error: 'Current password is incorrect' }), { status: 400 });
     }
 
     // Update password
     const { error: updateError } = await locals.supabase.auth.updateUser({
-      password: newPassword
+      password: newPassword,
     });
 
     if (updateError) {
-      return new Response(
-        JSON.stringify({ error: 'Failed to update password' }),
-        { status: 500 }
-      );
+      return new Response(JSON.stringify({ error: 'Failed to update password' }), { status: 500 });
     }
 
-    return new Response(
-      JSON.stringify({ message: 'Password updated successfully' }),
-      { status: 200 }
-    );
-
+    return new Response(JSON.stringify({ message: 'Password updated successfully' }), { status: 200 });
   } catch (error) {
     console.error('Password update error:', error);
-    return new Response(
-      JSON.stringify({ error: 'Internal server error' }),
-      { status: 500 }
-    );
+    return new Response(JSON.stringify({ error: 'Internal server error' }), { status: 500 });
   }
-}
+};

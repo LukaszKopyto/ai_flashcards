@@ -1,4 +1,4 @@
-import { getSecret } from 'astro:env/server'
+import { getSecret } from 'astro:env/server';
 import type { ModelConfig, APIResponse, ParsedResponse } from '@/types';
 import { z } from 'zod';
 
@@ -19,8 +19,8 @@ export class OpenRouterService {
   private apiKey: string;
   private systemMessage: string;
   private apiClient: typeof fetch;
-  private internalConfig: Record<string, any>;
-  private retryOptions: { maxRetries: number; backoffBaseMs: number; };
+  private internalConfig: Record<string, unknown>;
+  private retryOptions: { maxRetries: number; backoffBaseMs: number };
   private timeoutMs: number;
 
   constructor(config: OpenRouterServiceConfig) {
@@ -32,15 +32,15 @@ export class OpenRouterService {
       modelName: 'openai/gpt-4o-mini',
       parameters: {
         max_tokens: 1000,
-        temperature: 0.7
-      }
+        temperature: 0.7,
+      },
     };
     this.systemMessage = config.systemMessage;
     this.apiClient = fetch;
     this.internalConfig = {};
     this.retryOptions = {
       maxRetries: config.retryOptions?.maxRetries ?? 3,
-      backoffBaseMs: config.retryOptions?.backoffBaseMs ?? 100
+      backoffBaseMs: config.retryOptions?.backoffBaseMs ?? 100,
     };
     this.timeoutMs = config.timeoutMs ?? 5000;
   }
@@ -61,18 +61,17 @@ export class OpenRouterService {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload),
-        signal: controller.signal
+        signal: controller.signal,
       });
-      
+
       clearTimeout(timeoutId);
-      
+
       if (!response.ok) {
         throw new Error(`API responded with status ${response.status}`);
       }
-      
+
       const rawResponse = await response.json();
-      console.log('👀 ✅  rawResponse', rawResponse);
-      
+
       const parsedFlashcards = this.parseResponse(rawResponse);
       const apiResponse: APIResponse = { type: 'json_schema', data: parsedFlashcards };
       this.lastAPIResponse = apiResponse;
@@ -92,12 +91,12 @@ export class OpenRouterService {
     return this.lastAPIResponse;
   }
 
-  private preparePayload(userMessage: string): any {
+  private preparePayload(userMessage: string): Record<string, unknown> {
     const payload = {
       model: this.currentModelConfig.modelName,
       messages: [
         { role: 'system', content: this.systemMessage },
-        { role: 'user', content: userMessage }
+        { role: 'user', content: userMessage },
       ],
       response_format: {
         type: 'json_schema',
@@ -112,63 +111,66 @@ export class OpenRouterService {
                 items: {
                   type: 'object',
                   properties: {
-                    title: { 
+                    title: {
                       type: 'string',
-                      description: 'Title of the flashcard'
+                      description: 'Title of the flashcard',
                     },
-                    front: { 
+                    front: {
                       type: 'string',
-                      description: 'Front side of the flashcard'
+                      description: 'Front side of the flashcard',
                     },
-                    back: { 
+                    back: {
                       type: 'string',
-                      description: 'Back side of the flashcard'
+                      description: 'Back side of the flashcard',
                     },
-                    tags: { 
+                    tags: {
                       type: 'array',
                       items: { type: 'string' },
-                      description: 'List of tags for the flashcard'
+                      description: 'List of tags for the flashcard',
                     },
-                    relevance: { 
+                    relevance: {
                       type: 'number',
-                      description: 'Relevance score of the flashcard'
-                    }
+                      description: 'Relevance score of the flashcard',
+                    },
                   },
                   required: ['title', 'front', 'back', 'tags', 'relevance'],
-                  additionalProperties: false
-                }
-              }
+                  additionalProperties: false,
+                },
+              },
             },
             required: ['flashcards'],
-            additionalProperties: false
-          }
-        }
+            additionalProperties: false,
+          },
+        },
       },
-      ...this.currentModelConfig.parameters
+      ...this.currentModelConfig.parameters,
     };
     return payload;
   }
 
-  private parseResponse(rawResponse: any): ParsedResponse[] {
+  private parseResponse(rawResponse: Record<string, unknown>): ParsedResponse[] {
     const flashcardSchema = z.object({
-      flashcards: z.array(z.object({
-        title: z.string(),
-        front: z.string(),
-        back: z.string(),
-        tags: z.array(z.string()),
-        relevance: z.number()
-      }))
+      flashcards: z.array(
+        z.object({
+          title: z.string(),
+          front: z.string(),
+          back: z.string(),
+          tags: z.array(z.string()),
+          relevance: z.number(),
+        })
+      ),
     });
 
     try {
-      if (!rawResponse.choices?.[0]?.message?.content) {
+      const choices = rawResponse.choices as { message: { content: string } }[] | undefined;
+      if (!choices?.[0]?.message?.content) {
         throw new Error('Invalid API response structure');
       }
 
       let parsedContent;
       try {
-        parsedContent = JSON.parse(rawResponse.choices[0].message.content);
-      } catch (e) {
+        parsedContent = JSON.parse(choices[0].message.content);
+      } catch (_e) {
         throw new Error('Invalid JSON in API response content');
       }
 
@@ -180,12 +182,12 @@ export class OpenRouterService {
     }
   }
 
-  private logError(error: any): void {
-    const errorMsg = error?.message || 'Unknown error';
-    if (error?.name === 'AbortError') {
+  private logError(error: unknown): void {
+    const errorMsg = (error as Error)?.message || 'Unknown error';
+    if ((error as { name?: string })?.name === 'AbortError') {
       console.error(`[${new Date().toISOString()}] Request timed out: ${errorMsg}`);
     } else {
       console.error(`[${new Date().toISOString()}] OpenRouterService Error: ${errorMsg}`);
     }
   }
-} 
+}

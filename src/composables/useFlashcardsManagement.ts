@@ -67,4 +67,4 @@ export function useFlashcardsManagement(options: FlashcardsManagementOptions) {
     rejectFlashcard,
     createEmptyFlashcard,
   };
-} 
+}

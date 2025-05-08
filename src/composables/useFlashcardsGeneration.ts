@@ -45,4 +45,4 @@ export function useFlashcardsGeneration() {
     lastGenerationId,
     generateFlashcards,
   };
-} 
+}

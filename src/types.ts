@@ -32,8 +32,7 @@ export type FlashcardDto = Pick<
 
 // Command model for creating a flashcard (POST /flashcards)
 // We omit fields automatically managed by the system and enforce source as 'manual'
-export interface CreateFlashcardCommand
-  extends Omit<FlashcardInsert, 'user_id' | 'id' | 'created_at' | 'updated_at'> {
+export interface CreateFlashcardCommand extends Omit<FlashcardInsert, 'user_id' | 'id' | 'created_at' | 'updated_at'> {
   source: Source;
   generation_id?: string | null; // Optional for 'ai' and 'ai_edited', can be null
 }
@@ -60,7 +59,7 @@ export type GenerationDto = Omit<Generation, 'user_id'> & {
   flashcards_proposals: ProposalFlashcardDto[];
 };
 
-export type ValueOf<T> = T[keyof T]; 
+export type ValueOf<T> = T[keyof T];
 
 // Command model for starting a generation session (POST /generations)
 // Accepts the input text and optional metadata; the processing of generation_duration and counts is handled internally
@@ -79,7 +78,7 @@ export interface ModelConfig {
   modelName: string;
   parameters: {
     max_tokens: number;
-    [key: string]: any;
+    [key: string]: unknown;
   };
 }
 
@@ -98,10 +97,10 @@ export interface APIResponse {
   data: FlashcardResponse['flashcards'];
 }
 
-export type ParsedResponse = {
+export interface ParsedResponse {
   title: string;
   front: string;
   back: string;
   tags: string[];
   relevance: number;
-};
+}

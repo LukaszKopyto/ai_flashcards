@@ -19,7 +19,6 @@ const formData = ref<ResetPasswordForm>({
 
 const {
   validationErrors,
-  isValid,
   setFieldTouched,
   handleSubmit: validateForm,
 } = useFormValidation(resetPasswordFormSchema, formData);
@@ -83,14 +82,14 @@ const handleSubmit = async (e: Event) => {
   <div class="container mx-auto max-w-md space-y-8 py-8">
     <div class="space-y-2 text-center">
       <h1 class="text-3xl font-bold">Reset Password</h1>
-      <p class="text-gray-500" v-if="!isSuccess">Choose your new password</p>
-      <p class="text-green-600" v-else>
+      <p v-if="!isSuccess" class="text-gray-500">Choose your new password</p>
+      <p v-else class="text-green-600">
         Your password has been reset successfully. You can now
         <a href="/login" class="text-blue-600 hover:text-blue-800">log in</a> with your new password.
       </p>
     </div>
 
-    <form v-if="!isSuccess" @submit="handleSubmit" class="space-y-6">
+    <form v-if="!isSuccess" class="space-y-6" @submit="handleSubmit">
       <div class="space-y-2">
         <Label for="new-password">New Password</Label>
         <Input
@@ -99,8 +98,8 @@ const handleSubmit = async (e: Event) => {
           type="password"
           placeholder="Enter your new password"
           :error="validationErrors.newPassword?.[0]"
-          @blur="setFieldTouched('newPassword')"
           required
+          @blur="setFieldTouched('newPassword')"
         />
         <p v-if="validationErrors.newPassword?.[0]" class="mt-1 text-sm text-red-500">
           {{ validationErrors.newPassword[0] }}
@@ -118,8 +117,8 @@ const handleSubmit = async (e: Event) => {
           type="password"
           placeholder="Confirm your new password"
           :error="validationErrors.confirmNewPassword?.[0]"
-          @blur="setFieldTouched('confirmNewPassword')"
           required
+          @blur="setFieldTouched('confirmNewPassword')"
         />
         <p v-if="validationErrors.confirmNewPassword?.[0]" class="mt-1 text-sm text-red-500">
           {{ validationErrors.confirmNewPassword[0] }}

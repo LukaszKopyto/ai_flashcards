@@ -38,20 +38,23 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     const { input_text, metadata } = validationResult.data;
-    const generationService = new GenerationService(supabaseClient, new OpenRouterService({
-      modelConfig: {
-        modelName: 'openai/gpt-4o-mini',
-        parameters: {
-          max_tokens: 1000,
-          temperature: 0.7
-        }
-      },
-      systemMessage: PROMPT_GENERATION_SYSTEM_MESSAGE,
-      retryOptions: {
-        maxRetries: 3,
-        backoffBaseMs: 100
-      }
-    }));
+    const generationService = new GenerationService(
+      supabaseClient,
+      new OpenRouterService({
+        modelConfig: {
+          modelName: 'openai/gpt-4o-mini',
+          parameters: {
+            max_tokens: 1000,
+            temperature: 0.7,
+          },
+        },
+        systemMessage: PROMPT_GENERATION_SYSTEM_MESSAGE,
+        retryOptions: {
+          maxRetries: 3,
+          backoffBaseMs: 100,
+        },
+      })
+    );
 
     const result = await generationService.startGeneration({ input_text, metadata }, DEFAULT_USER_ID);
 

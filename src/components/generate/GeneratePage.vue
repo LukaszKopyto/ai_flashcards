@@ -58,10 +58,6 @@ const handleAddNewFlashcard = () => {
   openEditModal(createEmptyFlashcard());
 };
 
-const handleClearFlashcards = () => {
-  flashcardsList.value = [];
-};
-
 const { isSavingBulk, bulkSaveFlashcards } = useFlashcardsBulkOperations();
 const handleBulkSave = async () => {
   const success = await bulkSaveFlashcards(flashcardsList.value, lastGenerationId.value);
@@ -94,12 +90,12 @@ const handleBulkSave = async () => {
         </span>
         <span v-else class="invisible"><!-- Placeholder to maintain layout --></span>
         <div class="flex flex-wrap justify-end gap-4">
-          <Button @click="handleAddNewFlashcard" variant="outline"> Add Flashcard </Button>
+          <Button variant="outline" @click="handleAddNewFlashcard"> Add Flashcard </Button>
           <Button
-            @click="handleGenerate"
             :disabled="!isValid || isGenerating"
             :loading="isGenerating"
             :class="{ 'cursor-not-allowed opacity-50': !isValid || isGenerating }"
+            @click="handleGenerate"
           >
             <span>Generate Flashcards</span>
           </Button>
@@ -116,20 +112,20 @@ const handleBulkSave = async () => {
 
     <div v-if="flashcardsList.length > 0" class="flex justify-end">
       <Button
-        @click="handleBulkSave"
         :disabled="isSavingBulk"
         :loading="isSavingBulk"
         variant="default"
         class="w-full sm:w-auto"
+        @click="handleBulkSave"
       >
         <span>Save All</span>
       </Button>
     </div>
 
-    <EditModal v-model:isOpen="isEditModalOpen" :flashcard="editingFlashcard" @save="handleSaveEditedFlashcard" />
+    <EditModal v-model:is-open="isEditModalOpen" :flashcard="editingFlashcard" @save="handleSaveEditedFlashcard" />
 
     <ConfirmDialog
-      v-model:isOpen="isConfirmDialogOpen"
+      v-model:is-open="isConfirmDialogOpen"
       title="Reject Flashcard"
       description="Are you sure you want to reject this flashcard? This action cannot be undone."
       @confirm="handleRejectConfirm"

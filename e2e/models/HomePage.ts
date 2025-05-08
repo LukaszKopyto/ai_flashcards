@@ -4,7 +4,7 @@ import type { Page, Locator } from '@playwright/test';
 export class HomePage {
   readonly page: Page;
   readonly pageTitle: Locator;
-  
+
   constructor(page: Page) {
     this.page = page;
     this.pageTitle = page.locator('h1');
@@ -17,4 +17,4 @@ export class HomePage {
   async expectTitleContains(text: string) {
     await expect(this.pageTitle).toContainText(text);
   }
-} 
+}

@@ -16,7 +16,6 @@ const formData = ref<UpdatePasswordForm>({
 
 const {
   validationErrors,
-  isValid,
   setFieldTouched,
   handleSubmit: validateForm,
 } = useFormValidation(updatePasswordSchema, formData);
@@ -57,7 +56,7 @@ const handleSubmit = async (e: Event) => {
       newPassword: '',
       confirmNewPassword: '',
     };
-  } catch (error) {
+  } catch (_error) {
     toast.error('An error occurred while updating password');
   } finally {
     isLoading.value = false;
@@ -72,7 +71,7 @@ const handleSubmit = async (e: Event) => {
       <p class="text-gray-500">Enter your current password and choose a new one</p>
     </div>
 
-    <form @submit="handleSubmit" class="space-y-6">
+    <form class="space-y-6" @submit="handleSubmit">
       <div class="space-y-2">
         <Label for="current-password">Current Password</Label>
         <Input
@@ -81,8 +80,8 @@ const handleSubmit = async (e: Event) => {
           type="password"
           placeholder="Enter your current password"
           :error="validationErrors.currentPassword?.[0]"
-          @blur="setFieldTouched('currentPassword')"
           required
+          @blur="setFieldTouched('currentPassword')"
         />
         <p v-if="validationErrors.currentPassword?.[0]" class="mt-1 text-sm text-red-500">
           {{ validationErrors.currentPassword[0] }}
@@ -97,8 +96,8 @@ const handleSubmit = async (e: Event) => {
           type="password"
           placeholder="Enter your new password"
           :error="validationErrors.newPassword?.[0]"
-          @blur="setFieldTouched('newPassword')"
           required
+          @blur="setFieldTouched('newPassword')"
         />
         <p v-if="validationErrors.newPassword?.[0]" class="mt-1 text-sm text-red-500">
           {{ validationErrors.newPassword[0] }}
@@ -116,8 +115,8 @@ const handleSubmit = async (e: Event) => {
           type="password"
           placeholder="Confirm your new password"
           :error="validationErrors.confirmNewPassword?.[0]"
-          @blur="setFieldTouched('confirmNewPassword')"
           required
+          @blur="setFieldTouched('confirmNewPassword')"
         />
         <p v-if="validationErrors.confirmNewPassword?.[0]" class="mt-1 text-sm text-red-500">
           {{ validationErrors.confirmNewPassword[0] }}
