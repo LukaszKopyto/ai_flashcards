@@ -134,10 +134,16 @@ jobs:
             [View full unit test coverage report](${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID})
             `;
 
-            const issue_number = context.issue.number;
-            await github.rest.issues.createComment({
-              issue_number: issue_number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body
-            });
+            if (context.payload.pull_request) {
+              const issue_number = context.issue.number;
+              await github.rest.issues.createComment({
+                issue_number: issue_number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body
+              });
+            } else {
+              console.log('No pull request found. Skipping comment creation.');
+              console.log('Status summary:');
+              console.log(body);
+            }
