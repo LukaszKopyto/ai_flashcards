@@ -7,11 +7,6 @@ compatibility_date = "2024-07-01"
 [vars]
 ENVIRONMENT = "production"
 
-# KV Namespace for sessions
-kv_namespaces = [
-  { binding = "SESSION", id = "<KV_NAMESPACE_ID>" }
-]
-
 [site]
 bucket = "./dist"
 

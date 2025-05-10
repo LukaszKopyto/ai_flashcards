@@ -15,8 +15,10 @@ export default defineConfig({
     },
   }),
   integrations: [vue()],
-
   vite: {
     plugins: [tailwindcss()],
+    build: {
+      minify: false,
+    },
   },
 });
