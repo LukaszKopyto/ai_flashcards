@@ -20,9 +20,12 @@ export class GenerationService {
     private readonly openRouterService: OpenRouterService
   ) {}
 
-  async startGeneration(command: StartGenerationCommand, userId: string): Promise<GenerationDto> {
+  async startGeneration(command: StartGenerationCommand, userId: string | null): Promise<GenerationDto> {
     try {
       const startTime = Date.now();
+      if (!userId) {
+        throw new GenerationError('User ID is required', 'VALIDATION_ERROR');
+      }
 
       // 1. Initialize generation session in database
       const { data: generation, error: insertError } = await this.supabaseClient

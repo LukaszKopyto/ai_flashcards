@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import type { APIRoute } from 'astro';
-import { supabaseClient, DEFAULT_USER_ID } from '@/db/supabase.client';
 import { GenerationService } from '@/lib/services/generation.service';
 import { sanitizeGenerationInput } from '@/lib/sanitization/text';
 import { OpenRouterService } from '@/lib/services/openRouter.service';
@@ -18,7 +17,7 @@ const startGenerationSchema = z.object({
 
 export const prerender = false;
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, locals }) => {
   try {
     // 1. Validate request body
     const body = await request.json();
@@ -39,7 +38,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     const { input_text, metadata } = validationResult.data;
     const generationService = new GenerationService(
-      supabaseClient,
+      locals.supabase,
       new OpenRouterService({
         modelConfig: {
           modelName: 'openai/gpt-4o-mini',
@@ -56,7 +55,7 @@ export const POST: APIRoute = async ({ request }) => {
       })
     );
 
-    const result = await generationService.startGeneration({ input_text, metadata }, DEFAULT_USER_ID);
+    const result = await generationService.startGeneration({ input_text, metadata }, locals?.user?.id ?? null);
 
     return new Response(JSON.stringify(result), {
       status: 201,

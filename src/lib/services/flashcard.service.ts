@@ -18,6 +18,10 @@ export class FlashcardService {
 
   async createFlashcard(command: CreateFlashcardCommand, userId: string): Promise<FlashcardDto> {
     try {
+      if (!userId) {
+        throw new FlashcardError('User ID is required', 'VALIDATION_ERROR');
+      }
+
       // Prepare data for saving
       const flashcardData: FlashcardInsert = {
         ...command,
@@ -60,6 +64,10 @@ export class FlashcardService {
 
   async updateFlashcard(id: string, command: UpdateFlashcardCommand, userId: string): Promise<FlashcardDto> {
     try {
+      if (!userId) {
+        throw new FlashcardError('User ID is required', 'VALIDATION_ERROR');
+      }
+
       // Save to database
       const { data, error } = await this.supabaseClient
         .from('flashcards')
