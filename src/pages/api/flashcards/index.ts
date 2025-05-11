@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import type { APIRoute } from 'astro';
 import { FlashcardService } from '@/lib/services/flashcard.service';
-import { DEFAULT_USER_ID } from '@/db/supabase.client';
 import { sanitizeGenerationInput } from '@/lib/sanitization/text';
 
 export const prerender = false;
@@ -46,7 +45,6 @@ const createFlashcardSchema = z
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    // 1. Get and validate input data
     const body = await request.json();
     const validationResult = createFlashcardSchema.safeParse(body);
 
@@ -63,14 +61,11 @@ export const POST: APIRoute = async ({ request, locals }) => {
       );
     }
 
-    // 2. Use DEFAULT_USER_ID instead of authentication
-    const userId = DEFAULT_USER_ID;
+    const userId = locals?.user?.id ?? '';
 
-    // 3. Create flashcard using service
     const flashcardService = new FlashcardService(locals.supabase);
     const result = await flashcardService.createFlashcard(validationResult.data, userId);
 
-    // 4. Return response
     return new Response(JSON.stringify(result), {
       status: 201,
       headers: { 'Content-Type': 'application/json' },

@@ -14,6 +14,9 @@ export default defineConfig({
       enabled: true,
     },
   }),
+  experimental: {
+    session: true,
+  },
   integrations: [vue()],
   vite: {
     plugins: [tailwindcss()],

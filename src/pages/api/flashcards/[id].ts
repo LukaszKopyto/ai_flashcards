@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import type { APIRoute } from 'astro';
 import { FlashcardService } from '@/lib/services/flashcard.service';
-import { DEFAULT_USER_ID } from '@/db/supabase.client';
 import { sanitizeGenerationInput } from '@/lib/sanitization/text';
 
 export const prerender = false;
@@ -65,14 +64,11 @@ export const PUT: APIRoute = async ({ request, locals, params }) => {
       );
     }
 
-    // 3. Use DEFAULT_USER_ID instead of authentication
-    const userId = DEFAULT_USER_ID;
+    const userId = locals?.user?.id ?? '';
 
-    // 4. Update flashcard using service
     const flashcardService = new FlashcardService(locals.supabase);
     const result = await flashcardService.updateFlashcard(id, validationResult.data, userId);
 
-    // 5. Return response
     return new Response(JSON.stringify(result), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
@@ -80,7 +76,6 @@ export const PUT: APIRoute = async ({ request, locals, params }) => {
   } catch (error) {
     console.error('Error processing flashcard update request:', error);
 
-    // Handle specific error cases
     if (error instanceof Error && error.message.includes('not found')) {
       return new Response(
         JSON.stringify({
