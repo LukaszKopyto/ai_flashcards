@@ -174,29 +174,4 @@ jobs:
             ${deployStatus === "✅" ? `[View the live site](https://${process.env.CLOUDFLARE_PROJECT_NAME || 'ai-flashcards'}.pages.dev)` : ''}
             `;
 
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number || 1
-            });
-
-            const deploymentComment = comments.find(comment => comment.body.includes('Deployment Status Summary'));
-
-            if (deploymentComment) {
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: deploymentComment.id,
-                body
-              });
-            } else if (context.issue.number) {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body
-              });
-            } else {
-              console.log('No issue number found, not posting a comment.');
-              console.log(body);
-            }
+            console.log(body);
