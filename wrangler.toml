@@ -12,7 +12,6 @@ bucket = "./dist"
 
 [build]
 command = "pnpm run build"
-output_dir = "dist"
 
 # Additional developer tools
 [dev]
