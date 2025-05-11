@@ -127,11 +127,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Clear build cache
+        run: |
+          rm -rf dist
+          rm -rf .astro
+          rm -rf node_modules/.vite
+
       - name: Build project
         run: pnpm build
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          NODE_VERSION: 22.14.0
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1
@@ -141,37 +148,3 @@ jobs:
           projectName: ${{ secrets.CLOUDFLARE_PROJECT_NAME || 'ai-flashcards' }}
           directory: dist
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-
-  deployment-status:
-    name: Deployment Status
-    needs: build-and-deploy
-    runs-on: ubuntu-latest
-    if: ${{ always() && !cancelled() }}
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Create Deployment Status
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const deployStatus = "${{ needs.build-and-deploy.result }}" === "success" ? "✅" : "❌";
-            const lintStatus = "${{ needs.lint.result }}" === "success" ? "✅" : "❌";
-            const testStatus = "${{ needs.unit-test.result }}" === "success" ? "✅" : "❌";
-            const allPassed = deployStatus === "✅" && lintStatus === "✅" && testStatus === "✅";
-
-            const body = `## Deployment Status Summary
-
-            | Check | Status |
-            | ----- | ------ |
-            | Lint | ${lintStatus} |
-            | Unit Tests | ${testStatus} |
-            | Deployment | ${deployStatus} |
-
-            ${allPassed ? '✨ Successfully deployed to Cloudflare Pages!' : '❗ There were issues during deployment.'}
-
-            ${deployStatus === "✅" ? `[View the live site](https://${process.env.CLOUDFLARE_PROJECT_NAME || 'ai-flashcards'}.pages.dev)` : ''}
-            `;
-
-            console.log(body);
