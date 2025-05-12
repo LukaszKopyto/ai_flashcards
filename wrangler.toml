@@ -3,6 +3,7 @@ name = "ai-flashcards"
 main = "dist/_worker.js"
 compatibility_date = "2025-03-12"
 workers_dev = true
+pages_build_output_dir = "./dist"
 
 # Site configuration
 [site]
@@ -11,7 +12,6 @@ bucket = "dist"
 # Build configuration
 [build]
 command = "pnpm run build"
-upload = { format = "service-worker" }
 
 # KV namespaces
 [[kv_namespaces]]
