@@ -137,14 +137,16 @@ jobs:
         run: pnpm build
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
           NODE_VERSION: 22.14.0
+          KV_SESSION_ID: ${{ secrets.KV_SESSION_ID }}
 
       - name: Deploy to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
+        id: deploy
+        uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: ${{ secrets.CLOUDFLARE_PROJECT_NAME || 'ai-flashcards' }}
-          directory: dist
+          command: pages deploy dist --project-name=ai-flashcards
+          packageManager: pnpm
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}

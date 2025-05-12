@@ -35,7 +35,7 @@ Use these settings for the build configuration:
 In the Pages project settings, add the following environment variables:
 
 - `SUPABASE_URL`: Your Supabase URL
-- `SUPABASE_ANON_KEY`: Your Supabase anonymous key
+- `SUPABASE_KEY`: Your Supabase anonymous key
 
 ### 4. Deploy with GitHub Actions (Recommended)
 
@@ -45,9 +45,9 @@ To use GitHub Actions for deployment:
 
    - `CLOUDFLARE_API_TOKEN`: Your Cloudflare API token
    - `CLOUDFLARE_ACCOUNT_ID`: Your Cloudflare account ID
-   - `CLOUDFLARE_PROJECT_NAME`: Your Cloudflare Pages project name
    - `SUPABASE_URL`: Your Supabase URL
-   - `SUPABASE_ANON_KEY`: Your Supabase anonymous key
+   - `SUPABASE_KEY`: Your Supabase anonymous key
+   - `KV_SESSION_ID`: Your Cloudflare KV namespace ID for sessions
 
 2. The GitHub workflow (`.github/workflows/main.yml`) will automatically:
    - Build the application
@@ -73,3 +73,4 @@ To test the site locally:
 - [Astro Cloudflare Documentation](https://docs.astro.build/en/guides/integrations-guide/cloudflare/)
 - [Cloudflare Pages Documentation](https://developers.cloudflare.com/pages)
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
+- [Wrangler Action Documentation](https://github.com/cloudflare/wrangler-action)
