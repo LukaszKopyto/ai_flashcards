@@ -3,12 +3,22 @@ name = "ai-flashcards"
 main = "./.astro/cloudflare/_worker.js"
 compatibility_date = "2024-07-01"
 
+# Deployment settings
+workers_dev = true
+# routes = [
+#   { pattern = "ai-flashcards.yourdomain.com", custom_domain = true }
+# ]
+
 # Environment variables
 [vars]
 ENVIRONMENT = "production"
 
-[site]
+# Assets configuration
+[assets]
 bucket = "./dist"
+
+# Pages configuration
+pages_build_output_dir = "dist"
 
 [[kv_namespaces]]
 binding = "SESSION"
