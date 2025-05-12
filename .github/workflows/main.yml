@@ -150,9 +150,6 @@ jobs:
           command: pages deploy dist --project-name=ai-flashcards
           packageManager: pnpm
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          secrets: |
-            SUPABASE_URL
-            SUPABASE_KEY
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
