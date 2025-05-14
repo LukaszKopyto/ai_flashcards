@@ -3,16 +3,15 @@ import { computed } from 'vue';
 import { cn } from '@/lib/utils';
 
 interface Props {
+  id: string;
   type?: string;
   error?: string;
   class?: string;
-  testId?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   type: 'text',
   class: '',
-  testId: '',
   error: '',
 });
 
@@ -32,7 +31,7 @@ const inputClass = computed(() => {
 </script>
 
 <template>
-  <input v-model="model" :type="type" :class="inputClass" v-bind="$attrs" />
+  <input v-model="model" :type="type" :class="inputClass" v-bind="$attrs" :data-testid="`${id}-input`" />
   <p v-if="error" class="mt-1 text-sm text-red-500" data-testid="error-message">
     {{ error }}
   </p>
