@@ -24,7 +24,7 @@ export class OpenRouterService {
   private timeoutMs: number;
 
   constructor(config: OpenRouterServiceConfig) {
-    this.apiKey = getSecret('OPENROUTER_API_KEY') || '';
+    this.apiKey = getSecret('SECRET_OPENROUTER_API_KEY') || '';
     if (!this.apiKey) {
       throw new Error('Missing OPENROUTER_API_KEY environment variable');
     }
