@@ -136,9 +136,9 @@ jobs:
       - name: Build project
         run: pnpm build
         env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-          KV_SESSION_ID: ${{ secrets.KV_SESSION_ID }}
+          PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+          PUBLIC_SUPABASE_KEY: ${{ secrets.PUBLIC_SUPABASE_KEY }}
+          SECRET_OPENROUTER_API_KEY: ${{ secrets.SECRET_OPENROUTER_API_KEY }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           NODE_VERSION: 22.14.0
       - name: Deploy to Cloudflare Pages
@@ -151,5 +151,6 @@ jobs:
           packageManager: pnpm
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
         env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+          PUBLIC_SUPABASE_KEY: ${{ secrets.PUBLIC_SUPABASE_KEY }}
+          SECRET_OPENROUTER_API_KEY: ${{ secrets.SECRET_OPENROUTER_API_KEY }}
