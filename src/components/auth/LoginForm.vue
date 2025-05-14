@@ -62,14 +62,10 @@ const handleSubmit = async (e: Event) => {
           id="email"
           v-model="formData.email"
           type="email"
-          data-testid="email-input"
           placeholder="Enter your email"
           :error="validationErrors.email?.[0]"
           @blur="setFieldTouched('email')"
         />
-        <span v-if="validationErrors.email?.[0]" data-testid="email-error" class="text-sm text-red-500">
-          {{ validationErrors.email[0] }}
-        </span>
       </div>
 
       <div class="space-y-2">
@@ -78,14 +74,10 @@ const handleSubmit = async (e: Event) => {
           id="password"
           v-model="formData.password"
           type="password"
-          data-testid="password-input"
           placeholder="Enter your password"
           :error="validationErrors.password?.[0]"
           @blur="setFieldTouched('password')"
         />
-        <span v-if="validationErrors.password?.[0]" data-testid="password-error" class="text-sm text-red-500">
-          {{ validationErrors.password[0] }}
-        </span>
       </div>
 
       <div class="flex justify-end">
