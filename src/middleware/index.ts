@@ -12,10 +12,10 @@ const redirectRootMiddleware: MiddlewareHandler = async (context, next) => {
 };
 
 const supabaseClientMiddleware: MiddlewareHandler = async (context, next) => {
-  if (!import.meta.env.SUPABASE_URL || !import.meta.env.SUPABASE_KEY) {
+  if (!import.meta.env.PUBLIC_SUPABASE_URL || !import.meta.env.PUBLIC_SUPABASE_KEY) {
     throw new Error('Missing Supabase environment variables');
   }
-  const supabase = createServerClient(import.meta.env.SUPABASE_URL, import.meta.env.SUPABASE_KEY, {
+  const supabase = createServerClient(import.meta.env.PUBLIC_SUPABASE_URL, import.meta.env.PUBLIC_SUPABASE_KEY, {
     cookies: {
       getAll: () =>
         parseCookieHeader(context.request.headers.get('Cookie') ?? '').map(({ name, value }) => ({

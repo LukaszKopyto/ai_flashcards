@@ -127,76 +127,30 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Clear build cache
+        run: |
+          rm -rf dist
+          rm -rf .astro
+          rm -rf node_modules/.vite
+
       - name: Build project
         run: pnpm build
         env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-
+          PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+          PUBLIC_SUPABASE_KEY: ${{ secrets.PUBLIC_SUPABASE_KEY }}
+          SECRET_OPENROUTER_API_KEY: ${{ secrets.SECRET_OPENROUTER_API_KEY }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          NODE_VERSION: 22.14.0
       - name: Deploy to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
+        id: deploy
+        uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: ${{ secrets.CLOUDFLARE_PROJECT_NAME || 'ai-flashcards' }}
-          directory: dist
+          command: pages deploy dist --project-name=ai-flashcards
+          packageManager: pnpm
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-
-  deployment-status:
-    name: Deployment Status
-    needs: build-and-deploy
-    runs-on: ubuntu-latest
-    if: ${{ always() && !cancelled() }}
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Create Deployment Status
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const deployStatus = "${{ needs.build-and-deploy.result }}" === "success" ? "✅" : "❌";
-            const lintStatus = "${{ needs.lint.result }}" === "success" ? "✅" : "❌";
-            const testStatus = "${{ needs.unit-test.result }}" === "success" ? "✅" : "❌";
-            const allPassed = deployStatus === "✅" && lintStatus === "✅" && testStatus === "✅";
-
-            const body = `## Deployment Status Summary
-
-            | Check | Status |
-            | ----- | ------ |
-            | Lint | ${lintStatus} |
-            | Unit Tests | ${testStatus} |
-            | Deployment | ${deployStatus} |
-
-            ${allPassed ? '✨ Successfully deployed to Cloudflare Pages!' : '❗ There were issues during deployment.'}
-
-            ${deployStatus === "✅" ? `[View the live site](https://${process.env.CLOUDFLARE_PROJECT_NAME || 'ai-flashcards'}.pages.dev)` : ''}
-            `;
-
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number || 1
-            });
-
-            const deploymentComment = comments.find(comment => comment.body.includes('Deployment Status Summary'));
-
-            if (deploymentComment) {
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: deploymentComment.id,
-                body
-              });
-            } else if (context.issue.number) {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body
-              });
-            } else {
-              console.log('No issue number found, not posting a comment.');
-              console.log(body);
-            }
+        env:
+          PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+          PUBLIC_SUPABASE_KEY: ${{ secrets.PUBLIC_SUPABASE_KEY }}
+          SECRET_OPENROUTER_API_KEY: ${{ secrets.SECRET_OPENROUTER_API_KEY }}

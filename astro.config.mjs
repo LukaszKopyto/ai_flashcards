@@ -18,7 +18,6 @@ export default defineConfig({
     session: true,
   },
   integrations: [vue()],
-
   vite: {
     plugins: [tailwindcss()],
     build: {
