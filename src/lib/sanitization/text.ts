@@ -40,10 +40,17 @@ export function sanitize(text: string, options: SanitizationOptions = DEFAULT_OP
   }
 
   // Ensure valid UTF-8 encoding for PostgreSQL
-  sanitized = Buffer.from(sanitized).toString('utf-8');
-
-  return sanitized;
+  return forceUtf8Encoding(sanitized);
 }
+
+/**
+ * Forces UTF-8 encoding for text input
+ * @param text - Input text to sanitize
+ * @returns Sanitized text
+ */
+export const forceUtf8Encoding = (text: string): string => {
+  return new TextDecoder('utf-8').decode(new TextEncoder().encode(text));
+};
 
 /**
  * Predefined sanitization for generation input
