@@ -18,7 +18,6 @@ export class OpenRouterService {
 
   private apiKey: string;
   private systemMessage: string;
-  private apiClient: typeof fetch;
   private internalConfig: Record<string, unknown>;
   private retryOptions: { maxRetries: number; backoffBaseMs: number };
   private timeoutMs: number;
@@ -36,7 +35,6 @@ export class OpenRouterService {
       },
     };
     this.systemMessage = config.systemMessage;
-    this.apiClient = fetch;
     this.internalConfig = {};
     this.retryOptions = {
       maxRetries: config.retryOptions?.maxRetries ?? 3,
@@ -50,37 +48,40 @@ export class OpenRouterService {
     const maxRetries = this.retryOptions.maxRetries;
     let lastError: Error | null = null;
 
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), this.timeoutMs);
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      try {
+        // W Cloudflare Workers, fetch jest dostępny globalnie
+        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
 
-      const response = await this.apiClient('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${this.apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-        signal: controller.signal,
-      });
+        if (!response.ok) {
+          throw new Error(`API responded with status ${response.status}`);
+        }
 
-      clearTimeout(timeoutId);
+        const rawResponse = await response.json();
+        const parsedFlashcards = this.parseResponse(rawResponse);
+        const apiResponse: APIResponse = { type: 'json_schema', data: parsedFlashcards };
+        this.lastAPIResponse = apiResponse;
+        return apiResponse;
+      } catch (error: unknown) {
+        lastError = error as Error;
+        this.logError(error);
 
-      if (!response.ok) {
-        throw new Error(`API responded with status ${response.status}`);
+        // Jeśli to nie ostatnia próba, czekamy przed następną
+        if (attempt < maxRetries - 1) {
+          const backoffTime = this.retryOptions.backoffBaseMs * Math.pow(2, attempt);
+          await new Promise((resolve) => setTimeout(resolve, backoffTime));
+        }
       }
-
-      const rawResponse = await response.json();
-
-      const parsedFlashcards = this.parseResponse(rawResponse);
-      const apiResponse: APIResponse = { type: 'json_schema', data: parsedFlashcards };
-      this.lastAPIResponse = apiResponse;
-      return apiResponse;
-    } catch (error: unknown) {
-      lastError = error as Error;
-      this.logError(error);
-      throw new Error(`Failed after ${maxRetries} attempts. Last error: ${lastError?.message}`);
     }
+
+    throw new Error(`Failed after ${maxRetries} attempts. Last error: ${lastError?.message}`);
   }
 
   setModelConfig(config: ModelConfig): void {
