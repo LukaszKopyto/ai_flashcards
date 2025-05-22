@@ -1,6 +1,13 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '../../db/database.types';
-import type { CreateFlashcardCommand, FlashcardDto, FlashcardInsert, UpdateFlashcardCommand } from '../../types';
+import type {
+  CreateFlashcardCommand,
+  FlashcardDto,
+  FlashcardInsert,
+  UpdateFlashcardCommand,
+  GetFlashcardsCommand,
+  PaginatedResponse,
+} from '../../types';
 
 export class FlashcardError extends Error {
   constructor(
@@ -16,6 +23,13 @@ export class FlashcardError extends Error {
 export class FlashcardService {
   constructor(private readonly supabaseClient: SupabaseClient<Database>) {}
 
+  /**
+   * Creates a new flashcard
+   *
+   * @param command - Command containing the flashcard data
+   * @param userId - ID of the user creating the flashcard
+   * @returns Created flashcard DTO
+   */
   async createFlashcard(command: CreateFlashcardCommand, userId: string): Promise<FlashcardDto> {
     try {
       if (!userId) {
@@ -61,6 +75,15 @@ export class FlashcardService {
       throw new FlashcardError('An unexpected error occurred during flashcard creation', 'UNKNOWN_ERROR', error);
     }
   }
+
+  /**
+   * Updates an existing flashcard
+   *
+   * @param id - ID of the flashcard to update
+   * @param command - Command containing the updated flashcard data
+   * @param userId - ID of the user updating the flashcard
+   * @returns Updated flashcard DTO
+   */
 
   async updateFlashcard(id: string, command: UpdateFlashcardCommand, userId: string): Promise<FlashcardDto> {
     try {
@@ -108,6 +131,69 @@ export class FlashcardService {
       }
 
       throw new FlashcardError('An unexpected error occurred during flashcard update', 'UNKNOWN_ERROR', error);
+    }
+  }
+
+  /**
+   * Retrieves a paginated list of flashcards for a specific user with optional filtering
+   *
+   * @param command - Command containing pagination and filtering parameters
+   * @param userId - ID of the user whose flashcards to retrieve
+   * @returns Paginated response with flashcard DTOs
+   */
+  async getFlashcards(command: GetFlashcardsCommand, userId: string): Promise<PaginatedResponse<FlashcardDto>> {
+    if (!userId) {
+      throw new FlashcardError('User ID is required', 'VALIDATION_ERROR');
+    }
+    const { limit, offset, tag } = command;
+    try {
+      let query = this.supabaseClient
+        .from('flashcards')
+        .select('id, title, front, back, tags, source, created_at, updated_at, generation_id')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+
+      if (tag) {
+        query = query.contains('tags', [tag]);
+      }
+
+      const { data: flashcards, error } = await query.range(offset, offset + limit - 1).returns<FlashcardDto[]>();
+
+      if (error) {
+        throw new FlashcardError(`Failed to fetch flashcards: ${error.message}`, 'DATABASE_ERROR', error);
+      }
+
+      let countQuery = this.supabaseClient
+        .from('flashcards')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId);
+
+      if (tag) {
+        countQuery = countQuery.contains('tags', [tag]);
+      }
+
+      const { count, error: countError } = await countQuery;
+
+      if (countError) {
+        throw new FlashcardError(`Failed to count flashcards: ${countError.message}`, 'DATABASE_ERROR', countError);
+      }
+
+      return {
+        data: flashcards || [],
+        pagination: {
+          limit,
+          offset,
+          total: count || 0,
+        },
+      };
+    } catch (error) {
+      console.error('Error in getFlashcards:', error);
+
+      if (error instanceof FlashcardError) {
+        throw error;
+      }
+
+      throw new FlashcardError('An unexpected error occurred while retrieving flashcards', 'UNKNOWN_ERROR', error);
     }
   }
 }

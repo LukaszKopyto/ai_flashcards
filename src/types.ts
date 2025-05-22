@@ -41,6 +41,14 @@ export interface CreateFlashcardCommand extends Omit<FlashcardInsert, 'user_id' 
 // All fields are optional as per the API specification
 export type UpdateFlashcardCommand = Partial<Pick<FlashcardUpdate, 'title' | 'front' | 'back' | 'tags'>>;
 
+// Command model for retrieving flashcards (GET /flashcards)
+// Contains query parameters for pagination and filtering
+export interface GetFlashcardsCommand {
+  limit: number;
+  offset: number;
+  tag?: string;
+}
+
 // 2. Generations
 
 export type Source = 'ai' | 'ai_edited' | 'manual';
