@@ -3,11 +3,12 @@ import { onMounted } from 'vue';
 import { useMyFlashcards } from '../../composables/useMyFlashcards';
 import { Loader2, ServerCrash, Inbox } from 'lucide-vue-next';
 import FlashcardCard from './FlashCard.vue';
+import { Button } from '@/components/ui/button';
 
 const { flashcards, isLoading, error, fetchFlashcards } = useMyFlashcards();
 
 onMounted(() => {
-  fetchFlashcards();
+  fetchFlashcards({ limit: 10, offset: 0 });
 });
 </script>
 
@@ -30,12 +31,12 @@ onMounted(() => {
       <ServerCrash class="mb-4 h-12 w-12" />
       <h3 class="text-xl font-semibold">Oops! Something went wrong.</h3>
       <p>{{ error }}</p>
-      <button
+      <Button
         class="mt-4 rounded-md bg-red-600 px-4 py-2 text-white transition-colors hover:bg-red-700"
         @click="fetchFlashcards"
       >
         Try Again
-      </button>
+      </Button>
     </div>
 
     <div

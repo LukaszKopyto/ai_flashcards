@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import type { FlashcardDto, PaginatedResponse } from '../types';
+import type { FlashcardDto, PaginatedResponse, GetFlashcardsCommand } from '../types';
 import { toast } from 'vue-sonner';
 
 export function useMyFlashcards() {
@@ -7,11 +7,11 @@ export function useMyFlashcards() {
   const isLoading = ref(false);
   const error = ref<string | null>(null);
 
-  const fetchFlashcards = async () => {
+  const fetchFlashcards = async ({ limit = 10, offset = 0, tag = '' }: GetFlashcardsCommand) => {
     isLoading.value = true;
     error.value = null;
     try {
-      const response = await fetch('/api/flashcards');
+      const response = await fetch(`/api/flashcards?limit=${limit}&offset=${offset}&tag=${tag}`);
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Failed to fetch flashcards');
