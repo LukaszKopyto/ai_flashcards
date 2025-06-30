@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { ProposalFlashcardDto } from '../../types';
-import FlashcardCard from './FlashcardCard.vue';
+import { defineEmits, defineProps } from 'vue';
+import FlashcardCard from '@/components/flashcards/FlashCard.vue';
 
 interface Props {
   flashcards: ProposalFlashcardDto[];
