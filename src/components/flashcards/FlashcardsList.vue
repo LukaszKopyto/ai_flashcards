@@ -4,12 +4,29 @@ import { useMyFlashcards } from '../../composables/useMyFlashcards';
 import { Loader2, ServerCrash, Inbox } from 'lucide-vue-next';
 import FlashcardCard from './FlashCard.vue';
 import { Button } from '@/components/ui/button';
+import { useVirtualList, useInfiniteScroll } from '@vueuse/core';
 
-const { flashcards, isLoading, error, fetchFlashcards } = useMyFlashcards();
+const { flashcards, isLoading, error, hasMore, isFetchingMore, loadMoreFlashcards } = useMyFlashcards();
 
 onMounted(() => {
-  fetchFlashcards({ limit: 10, offset: 0 });
+  loadMoreFlashcards();
 });
+
+const { list, containerProps, wrapperProps } = useVirtualList(flashcards, {
+  itemHeight: 274,
+  overscan: 5,
+});
+
+useInfiniteScroll(
+  containerProps.ref,
+  () => {
+    loadMoreFlashcards();
+  },
+  {
+    distance: 10,
+    canLoadMore: () => hasMore.value && !isFetchingMore.value,
+  }
+);
 </script>
 
 <template>
@@ -33,7 +50,8 @@ onMounted(() => {
       <p>{{ error }}</p>
       <Button
         class="mt-4 rounded-md bg-red-600 px-4 py-2 text-white transition-colors hover:bg-red-700"
-        @click="fetchFlashcards"
+        :disabled="isFetchingMore || !hasMore"
+        @click="loadMoreFlashcards"
       >
         Try Again
       </Button>
@@ -52,8 +70,15 @@ onMounted(() => {
       >
     </div>
 
-    <div v-else class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-      <FlashcardCard v-for="card in flashcards" :key="card.id" :flashcard="card" data-testid="flashcard-item" />
+    <div v-else v-bind="containerProps" class="h-[calc(100vh-200px)] overflow-y-auto" data-testid="flashcard-list">
+      <div v-bind="wrapperProps">
+        <div v-for="{ data: card } in list" :key="card.id" class="px-1 pb-6">
+          <FlashcardCard :flashcard="card" data-testid="flashcard-item" class="h-[250px]" />
+        </div>
+        <div v-if="isFetchingMore" class="flex items-center justify-center p-4">
+          <Loader2 class="h-8 w-8 animate-spin text-slate-400" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
