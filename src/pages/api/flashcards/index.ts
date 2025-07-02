@@ -2,31 +2,16 @@ import { z } from 'zod';
 import type { APIRoute } from 'astro';
 import type { PaginatedResponse, FlashcardDto, GetFlashcardsCommand } from '@/types';
 import { FlashcardService } from '@/lib/services/flashcard.service';
-import { sanitizeGenerationInput } from '@/lib/sanitization/text';
 
 export const prerender = false;
 
 // Schema for input validation
 const createFlashcardSchema = z
   .object({
-    title: z
-      .string()
-      .min(1, 'Title is required')
-      .transform((val) => sanitizeGenerationInput(val)),
-    front: z
-      .string()
-      .min(1, 'Front content is required')
-      .max(200, 'Front content cannot exceed 200 characters')
-      .transform((val) => sanitizeGenerationInput(val)),
-    back: z
-      .string()
-      .min(1, 'Back content is required')
-      .max(500, 'Back content cannot exceed 500 characters')
-      .transform((val) => sanitizeGenerationInput(val)),
-    tags: z
-      .array(z.string())
-      .default([])
-      .transform((tags) => tags.map((tag) => sanitizeGenerationInput(tag)).filter((tag) => tag.length > 0)),
+    title: z.string().min(1, 'Title is required'),
+    front: z.string().min(1, 'Front content is required').max(200, 'Front content cannot exceed 200 characters'),
+    back: z.string().min(1, 'Back content is required').max(500, 'Back content cannot exceed 500 characters'),
+    tags: z.array(z.string()).default([]),
     source: z.enum(['ai', 'ai_edited', 'manual']),
     generation_id: z.string().uuid().nullable(),
   })

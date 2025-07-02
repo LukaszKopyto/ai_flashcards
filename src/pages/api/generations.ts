@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import type { APIRoute } from 'astro';
 import { GenerationService } from '@/lib/services/generation.service';
-import { sanitizeGenerationInput } from '@/lib/sanitization/text';
 import { OpenRouterService } from '@/lib/services/openRouter.service';
 import { PROMPT_GENERATION_SYSTEM_MESSAGE } from '@/lib/constants';
 
@@ -10,8 +9,7 @@ const startGenerationSchema = z.object({
   input_text: z
     .string()
     .min(1000, 'Input text must be at least 1000 characters long')
-    .max(10000, 'Input text cannot exceed 10000 characters')
-    .transform((text) => sanitizeGenerationInput(text)),
+    .max(10000, 'Input text cannot exceed 10000 characters'),
   metadata: z.record(z.unknown()).optional(),
 });
 

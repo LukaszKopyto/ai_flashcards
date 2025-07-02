@@ -1,33 +1,19 @@
 import { z } from 'zod';
 import type { APIRoute } from 'astro';
 import { FlashcardService } from '@/lib/services/flashcard.service';
-import { sanitizeGenerationInput } from '@/lib/sanitization/text';
 
 export const prerender = false;
 
 // Schema for update validation
 const updateFlashcardSchema = z.object({
-  title: z
-    .string()
-    .min(1, 'Title is required')
-    .transform((val) => sanitizeGenerationInput(val))
-    .optional(),
+  title: z.string().min(1, 'Title is required').optional(),
   front: z
     .string()
     .min(1, 'Front content is required')
     .max(200, 'Front content cannot exceed 200 characters')
-    .transform((val) => sanitizeGenerationInput(val))
     .optional(),
-  back: z
-    .string()
-    .min(1, 'Back content is required')
-    .max(500, 'Back content cannot exceed 500 characters')
-    .transform((val) => sanitizeGenerationInput(val))
-    .optional(),
-  tags: z
-    .array(z.string())
-    .transform((tags) => tags.map((tag) => sanitizeGenerationInput(tag)).filter((tag) => tag.length > 0))
-    .optional(),
+  back: z.string().min(1, 'Back content is required').max(500, 'Back content cannot exceed 500 characters').optional(),
+  tags: z.array(z.string()).optional(),
 });
 
 export const PUT: APIRoute = async ({ request, locals, params }) => {
